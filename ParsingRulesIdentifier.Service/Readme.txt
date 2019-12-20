@@ -15,3 +15,5 @@ Algorythm of work
 		and that has only 'text' html tags within. If there are many 'unique' rules for a source - success, otherwise job failed
 3. Saves results to DB (or sends result to REST API)
 4. Sends message with job state (success/ failed) and/or result (rules)
+
+5. All sources/parsing-rules could be added and viewed via web app
