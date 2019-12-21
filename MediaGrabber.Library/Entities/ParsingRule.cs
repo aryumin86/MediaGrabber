@@ -8,5 +8,7 @@ namespace MediaGrabber.Library.Entities
     {
         public int Id { get; set; }
         public DateTime WhenAdded { get; set; }
+        public string XPath { get; set; }
+        public bool ManuallyChecked { get; set; } = false;
     }
 }
