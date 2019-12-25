@@ -13,4 +13,8 @@
     <PackageReference Include="coverlet.collector" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MediaGrabber.Library\MediaGrabber.Library.csproj" />
+  </ItemGroup>
+
 </Project>
