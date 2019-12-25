@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MediaGrabber.Library.Enums;
 
 namespace MediaGrabber.Library.Entities
 {
@@ -13,5 +14,7 @@ namespace MediaGrabber.Library.Entities
         public string MainUrl { get; set; }
         public IEnumerable<MassMediaRssPage> RssPages { get; set; }        
         public IEnumerable<ParsingRule> ParsingRules { get; set; }
+        public string Encoding {get; set;}
+        public WebSiteOpeningType WebSiteOpeningType {get; set;}
     }
 }

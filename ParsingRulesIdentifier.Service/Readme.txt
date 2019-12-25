@@ -17,3 +17,5 @@ Algorythm of work
 4. Sends message with job state (success/ failed) and/or result (rules)
 
 5. All sources/parsing-rules could be added and viewed via web app
+
+ParsingRulesIdentifier.Service saves attempts to identify parsing rules of the website to table ParsingRulesUpdates
