@@ -16,5 +16,6 @@ namespace MediaGrabber.Library.Entities
         public IEnumerable<ParsingRule> ParsingRules { get; set; }
         public string Encoding {get; set;}
         public WebSiteOpeningType WebSiteOpeningType {get; set;}
+        public int ParsingPauseInMs {get; set;}
     }
 }
