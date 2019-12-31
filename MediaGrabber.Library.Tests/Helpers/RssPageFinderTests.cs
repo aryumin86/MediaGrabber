@@ -1,4 +1,5 @@
-﻿using MediaGrabber.Library.Helpers;
+﻿using MediaGrabber.Library.Entities;
+using MediaGrabber.Library.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,23 +16,28 @@ namespace MediaGrabber.Library.Tests.Helpers
         [InlineData("dni.ru.html")]
         public void ShouldFindRssPagesOnLocalFiles(string htmlFilePath)
         {
+            var massMedia = new MassMedia();
             var binPath = Environment.CurrentDirectory;
             htmlFilePath = 
-                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "RssPages", htmlFilePath);
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "HtmlWithRssLinks", htmlFilePath);
             var pageHtml = File.ReadAllText(htmlFilePath);
-            var rssPageFinder = new RssPageFinder();
-            var rssPages = rssPageFinder.ParsePageforRssUrls(pageHtml);
+            var rssPageFinder = new RssPageFinder(massMedia);
+            var rssPages = rssPageFinder.ParsePageforMayBeRssUrls(pageHtml);
             Assert.True(rssPages.Count() > 0);
         }
 
         [Theory]
         [Trait("Category", "Unit")]
         [InlineData("htmlWithoutRssUrls_1.html")]
-        public void ShouldNotFindRssPagesOnLocalFiles(string path)
+        public void ShouldNotFindRssPagesOnLocalFiles(string htmlFilePath)
         {
-            var pageHtml = File.ReadAllText(path);
-            var rssPageFinder = new RssPageFinder();
-            var rssPages = rssPageFinder.FindRssPages(pageHtml);
+            var massMedia = new MassMedia();
+            var binPath = Environment.CurrentDirectory;
+            htmlFilePath = 
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "HtmlWithoutRssLinks", htmlFilePath);
+            var pageHtml = File.ReadAllText(htmlFilePath);
+            var rssPageFinder = new RssPageFinder(massMedia);
+            var rssPages = rssPageFinder.ParsePageforMayBeRssUrls(pageHtml);
             Assert.True(rssPages.Count() == 0);
         }
 

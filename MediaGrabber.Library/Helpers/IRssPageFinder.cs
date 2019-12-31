@@ -3,6 +3,7 @@ using MediaGrabber.Library.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -12,7 +13,7 @@ namespace MediaGrabber.Library.Helpers
     public interface IRssPageFinder
     {
         public IEnumerable<RssPage> FindRssPages(string baseUrl);
-        public string GetPageHtml(string url, WebSiteOpeningType webSiteOpeningType);
-        public IEnumerable<string> ParsePageforRssUrls(string html);
+        public Task<string> GetPageHtml(string url, WebSiteOpeningType webSiteOpeningType);
+        public IEnumerable<string> ParsePageforMayBeRssUrls(string html);
     }
 }
