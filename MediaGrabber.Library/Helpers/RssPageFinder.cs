@@ -19,7 +19,7 @@ namespace MediaGrabber.Library.Helpers
     /// </summary>
     public class RssPageFinder : IRssPageFinder
     {
-        private MassMedia _massMedia;
+        private readonly MassMedia _massMedia;
         public RssPageFinder(MassMedia massMedia){
             _massMedia = massMedia;
         }
@@ -102,7 +102,10 @@ namespace MediaGrabber.Library.Helpers
             var linksELems = doc.DocumentNode.SelectNodes("//a[@href]");
             var linksUrls = linksELems.Select(e => e.GetAttributeValue("href", null));
             var rssLinks = linksUrls.Where(link => this.MayBeLinkToRssPageByLinkFormat(link));
-            //TODO add MayBeLinkToRssPageByLinkText selection condition
+            var rssLinks2 = 
+                linksELems.Where(e => this.MayBeLinkToRssPageByLinkText(e.InnerText))
+                .Select(e => e.GetAttributeValue("href", null));
+            rssLinks = rssLinks.Union(rssLinks2);
             var absoluteRssLinks = rssLinks.Select(l => CreateAbsoluteUrlIfRelative(l));
             return absoluteRssLinks;
         }
