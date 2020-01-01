@@ -9,6 +9,7 @@ namespace MediaGrabber.Library.Enums
         NotStarted = 1,
         Started = 2,
         Success = 3,
-        Failed = 4
+        Failed = 4,
+        NeedsToBeDoneAgain = 5
     }
 }

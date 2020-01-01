@@ -33,38 +33,118 @@ namespace MediaGrabber.Library.Helpers
         {
             var rssPages = new List<RssPage>();
             // opens main page
-            var basePageHtml = this.GetPageHtml(this._massMedia.MainUrl).Result;
+            string basePageHtml = string.Empty;
+            try
+            {
+                basePageHtml = this.GetPageHtml(this._massMedia.MainUrl).Result;
+            }
+            catch(Exception ex)
+            {
+                this._massMedia.ParsingRuleIdentificationState = ParsingRuleIdentificationState.Failed;
+                return null;
+            }
+
             // gets all page links
-            var basePageLinks = this.GetAllLinks(basePageHtml);
-            // Links that probably direct to rss pages
-            var mayBeRssPageLinks = basePageLinks.Where(l => MayBeLinkToRssPageByLinkFormat(l));
-            // opens each rss page link with pauses and check each as a valid rss page.
+            var mayBeBasePageRssLinks = ParsePageforMayBeRssUrls(basePageHtml);
+            // change links protocol if needed
+            mayBeBasePageRssLinks = mayBeBasePageRssLinks
+                .Where(l => NormalLinkToSomePage(l))
+                .Where(l => IsLocalLink(l))
+                .Select(l => CreateAbsoluteUrlIfRelative(l))
+                .Select(l => ChangeProtokolIfNeeded(l));
+
+            // for each http page we create a https link due to http -> https redirection problems
+            // with HttpClientHandler implementation on windows
+            //var httpsLinksToAdd = mayBeBasePageRssLinks
+            //    .Where(x => x.ToUpperInvariant().StartsWith("HTTP://"))
+            //    .Select(x => new Uri(x))
+            //    .Select(x => "https://" + x.Host + x.AbsolutePath);
+            //mayBeBasePageRssLinks = mayBeBasePageRssLinks.Union(httpsLinksToAdd);
+
+            // opens each rss page link with pauses and check each for being a valid rss page.
             // If it is a valid rss page - adds it to result list.
-            foreach(var l in mayBeRssPageLinks){
-                var pageHtml = GetPageHtml(l).Result;
-                if(IsValidRssPage(pageHtml))
-                    rssPages.Add(new RssPage{ Url = l, MassMediaId = _massMedia.Id });
-                // If it is not a valid rss page - gets all link on this page 
-                // and repead alorythm for them
-                else{
-                    var pageLinks = this.GetAllLinks(pageHtml);
-                    var mayBeRssPageLinks2 = pageLinks.Where(l => MayBeLinkToRssPageByLinkFormat(l));
-                    foreach(var l2 in mayBeRssPageLinks2){
-                        var pageHtml2 = GetPageHtml(l2).Result;
-                        if(IsValidRssPage(pageHtml2)){
-                            rssPages.Add(new RssPage{ Url = l2, MassMediaId = _massMedia.Id });
+            foreach (var l in mayBeBasePageRssLinks)
+            {
+                try
+                {
+                    var pageHtml = GetPageHtml(l).Result;
+                    if (string.IsNullOrWhiteSpace(pageHtml))
+                        continue;
+
+                    if (IsValidRssPage(pageHtml))
+                        rssPages.Add(new RssPage { Url = l, MassMediaId = _massMedia.Id });
+                    // If it is not a valid rss page - gets all link on this page 
+                    // and repead alorythm for them
+                    else
+                    {
+                        var pageLinks = this.GetAllLinks(pageHtml);
+                        var mayBeRssPageLinks2 = pageLinks
+                            .Where(x => MayBeLinkToRssPageByLinkFormat(x))
+                            .Where(x => NormalLinkToSomePage(x))
+                            .Where(x => IsLocalLink(x))
+                            .Select(x => CreateAbsoluteUrlIfRelative(x))
+                            .Select(x => ChangeProtokolIfNeeded(x));
+
+                        foreach (var l2 in mayBeRssPageLinks2)
+                        {
+                            var pageHtml2 = GetPageHtml(l2).Result;
+                            if (IsValidRssPage(pageHtml2))
+                            {
+                                rssPages.Add(new RssPage { Url = l2, MassMediaId = _massMedia.Id });
+                            }
+                            Thread.Sleep(_massMedia.ParsingPauseInMs);
                         }
-                        Thread.Sleep(_massMedia.ParsingPauseInMs);
                     }
                 }
+                catch(Exception ex)
+                {
+                    
+                }                
             }
 
             // filter rss page doubles
             rssPages = rssPages
-                .GroupBy(p => new {p.Url, p} )
+                .GroupBy(p => p.Url )
                 .Select(p => p.FirstOrDefault())
                 .ToList();
             return rssPages;
+        }
+
+        /// <summary>
+        /// Filtering links if they target to main page or to the same page.
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        private bool NormalLinkToSomePage(string link)
+        {
+            if (string.IsNullOrWhiteSpace(link))
+                return false;
+            if (link == "/" || link == "#")
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Changes link protocol if it is needed for correct http request.
+        /// </summary>
+        /// <param name="l"></param>
+        /// <returns></returns>
+        private string ChangeProtokolIfNeeded(string url)
+        {
+            string res = null;
+            Uri uri;
+            if(Uri.TryCreate(url, UriKind.Absolute, out uri))
+            {
+                if (uri.Scheme.ToUpperInvariant() != "HTTP" && uri.Scheme.ToUpperInvariant() != "HTTPS")
+                {
+                    res = this._massMedia.Uri.Scheme + "://" + this._massMedia.Uri.Host + uri.PathAndQuery;
+                }
+                else
+                    res = url;
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -76,18 +156,38 @@ namespace MediaGrabber.Library.Helpers
         public async Task<string> GetPageHtml(string url, 
             WebSiteOpeningType webSiteOpeningType = WebSiteOpeningType.HtmlAgilityPack)
         {
+            string res = string.Empty;
+
             if(webSiteOpeningType == WebSiteOpeningType.HtmlAgilityPack){
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetAsync(new Uri(url)).ConfigureAwait(false);
-                    response.EnsureSuccessStatusCode();
-                    string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return responseBody;
-                }                
+                    using(var response = await client.GetAsync(url).ConfigureAwait(false))
+                    {
+                        if(response.StatusCode == HttpStatusCode.Moved)
+                        {
+                            var redirectUri = response.Headers.Location;
+                            if (!redirectUri.IsAbsoluteUri)
+                            {
+                                redirectUri = new Uri(this._massMedia.MainUrl + redirectUri);
+                                
+                            }
+                            res = GetPageHtml(redirectUri.AbsoluteUri).Result;
+                        }
+                        else
+                        {
+                            using (var content = response.Content)
+                            {
+                                res = await content.ReadAsStringAsync().ConfigureAwait(false);
+                            }
+                        }                        
+                    }
+                }
             }
             else{
                 throw new NotImplementedException();
             }
+
+            return res;
         }
 
         /// <summary>
@@ -116,6 +216,9 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="html"></param>
         /// <returns></returns>
         public bool IsValidRssPage(string html){
+            if (string.IsNullOrWhiteSpace(html))
+                return false;
+
             var res = false;
 
             try
@@ -182,20 +285,33 @@ namespace MediaGrabber.Library.Helpers
         }
 
         /// <summary>
-        /// Identifies if link directs to the same site.
+        /// Identifies if link directs to the same site or subdomain.
         /// </summary>
         /// <returns></returns>
-        private bool IsLocalLink(string link, string massMediaUrl)
+        public bool IsLocalLink(string link)
         {
             var res = true;
             Uri uri;
             if (Uri.TryCreate(link, UriKind.Absolute, out uri))
             {
-                if (uri.Host != new Uri(massMediaUrl, UriKind.Absolute).Host)
+                if (uri.Host != this._massMedia.Uri.Host && !IsSubDomain(_massMedia.Uri, uri))
                     res = false;
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// Checks if a link is a subdomain of another link.
+        /// </summary>
+        /// <param name="mainDomain"></param>
+        /// <param name="mayBeSubDomain"></param>
+        /// <returns></returns>
+        private bool IsSubDomain(Uri mainDomainLink, Uri mayBeSubDomainLink)
+        {
+            throw new NotImplementedException();
+
+            return false;
         }
     }
 }
