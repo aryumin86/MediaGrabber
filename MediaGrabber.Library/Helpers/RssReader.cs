@@ -5,8 +5,16 @@ using System.Text;
 
 namespace MediaGrabber.Library.Helpers
 {
+    /// <summary>
+    /// Reads RSS xml and gets all articles data from it.
+    /// </summary>
     public class RssReader : IRssReader
     {
+        /// <summary>
+        /// Returns all articles links from RSS page.
+        /// </summary>
+        /// <param name="rssPage"></param>
+        /// <returns></returns>
         public IEnumerable<Article> GetArticlesBasicDataFromRssPage(RssPage rssPage)
         {
             throw new NotImplementedException();
