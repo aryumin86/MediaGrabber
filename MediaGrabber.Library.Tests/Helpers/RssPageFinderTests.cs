@@ -16,6 +16,11 @@ namespace MediaGrabber.Library.Tests.Helpers
         [Theory]
         [Trait("Category", "Unit")]
         [InlineData("http://dni.ru", "http://subdomain.dni.ru")]
+        [InlineData("http://www.dni.ru", "http://www.subdomain.dni.ru")]
+        [InlineData("http://washingtonpost.com", "http://feeds.washingtonpost.com/rss/rss_post-partisan")]
+        [InlineData("http://washingtonpost.com", "http://feeds.washingtonpost.com/rss/rss_post-everything")]
+        [InlineData("http://washingtonpost.com", "http://feeds.washingtonpost.com/rss/rss_rampage")]
+        [InlineData("https://www.washingtonpost.com/", "http://feeds.washingtonpost.com/rss/politics?tid=lk_inline_manual_2")]
         public void IsLocalLink_ShouldReturnTrueIfItIsMassMediaSubdomainLink(string massMediaMainUrl, string massMediaSubDomainUrl)
         {
             var massMedia = new MassMedia(massMediaMainUrl);            
@@ -89,7 +94,7 @@ namespace MediaGrabber.Library.Tests.Helpers
 
         [Theory]
         [Trait("Category", "WebData")]
-        [InlineData("ccc.ru.html")]
+        [InlineData("content-analysis.ru")]
         public void ShouldNotFindRssPagesOnRemoteWebSite(string url)
         {
             var massMedia = new MassMedia(url)
@@ -100,7 +105,7 @@ namespace MediaGrabber.Library.Tests.Helpers
 
             var rssPageFinder = new RssPageFinder(massMedia);
             var rssPages = rssPageFinder.FindRssPages();
-            Assert.False(rssPages.Count() > 0);
+            Assert.True(rssPages == null);
         }
 
         [Theory]

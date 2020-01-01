@@ -53,14 +53,6 @@ namespace MediaGrabber.Library.Helpers
                 .Select(l => CreateAbsoluteUrlIfRelative(l))
                 .Select(l => ChangeProtokolIfNeeded(l));
 
-            // for each http page we create a https link due to http -> https redirection problems
-            // with HttpClientHandler implementation on windows
-            //var httpsLinksToAdd = mayBeBasePageRssLinks
-            //    .Where(x => x.ToUpperInvariant().StartsWith("HTTP://"))
-            //    .Select(x => new Uri(x))
-            //    .Select(x => "https://" + x.Host + x.AbsolutePath);
-            //mayBeBasePageRssLinks = mayBeBasePageRssLinks.Union(httpsLinksToAdd);
-
             // opens each rss page link with pauses and check each for being a valid rss page.
             // If it is a valid rss page - adds it to result list.
             foreach (var l in mayBeBasePageRssLinks)
@@ -77,9 +69,8 @@ namespace MediaGrabber.Library.Helpers
                     // and repead alorythm for them
                     else
                     {
-                        var pageLinks = this.GetAllLinks(pageHtml);
-                        var mayBeRssPageLinks2 = pageLinks
-                            .Where(x => MayBeLinkToRssPageByLinkFormat(x))
+                        var mayBeRssLinks = ParsePageforMayBeRssUrls(pageHtml);
+                        var mayBeRssPageLinks2 = mayBeRssLinks
                             .Where(x => NormalLinkToSomePage(x))
                             .Where(x => IsLocalLink(x))
                             .Select(x => CreateAbsoluteUrlIfRelative(x))
@@ -309,7 +300,15 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         private bool IsSubDomain(Uri mainDomainLink, Uri mayBeSubDomainLink)
         {
-            throw new NotImplementedException();
+            var nodes = mayBeSubDomainLink.Host.Split('.')
+                .Where(n => n.ToUpperInvariant() != "WWW")
+                .ToArray();
+            int startNode = 0;
+
+            if (mainDomainLink.Host.Split('.')
+                .Where(n => n.ToUpperInvariant() != "WWW")
+                .ToArray()[0 + startNode].ToUpperInvariant() == nodes[startNode + 1].ToUpperInvariant())
+                return true;
 
             return false;
         }
