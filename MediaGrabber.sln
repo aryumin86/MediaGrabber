@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaGrabber.Library", "Med
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaGrabber.Library.Tests", "MediaGrabber.Library.Tests\MediaGrabber.Library.Tests.csproj", "{916DEC89-69CB-48A7-96A8-C8DF05DFE5BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaGrabber.Api", "MediaGrabber.Api\MediaGrabber.Api.csproj", "{0F436725-945F-4161-8B7C-EA662FF73EF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaGrabber.Api", "MediaGrabber.Api\MediaGrabber.Api.csproj", "{0F436725-945F-4161-8B7C-EA662FF73EF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

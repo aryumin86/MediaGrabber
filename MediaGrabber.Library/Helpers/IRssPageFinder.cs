@@ -12,8 +12,33 @@ namespace MediaGrabber.Library.Helpers
     /// </summary>
     public interface IRssPageFinder
     {
-        public IEnumerable<RssPage> FindRssPages(string baseUrl);
+        /// <summary>
+        /// Main method for looking for rss pages at the website.
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>        
+        public IEnumerable<RssPage> FindRssPages();
+
+        /// <summary>
+        /// Opens link ans gets page html.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="webSiteOpeningType"></param>
+        /// <returns></returns>
         public Task<string> GetPageHtml(string url, WebSiteOpeningType webSiteOpeningType);
+
+        /// <summary>
+        /// Tries to find links to pages that could be RSS pages.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
         public IEnumerable<string> ParsePageforMayBeRssUrls(string html);
+
+        /// <summary>
+        /// Checks if the page has valid rss format.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public bool IsValidRssPage(string html);
     }
 }

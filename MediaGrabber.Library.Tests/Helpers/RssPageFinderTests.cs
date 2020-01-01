@@ -14,6 +14,7 @@ namespace MediaGrabber.Library.Tests.Helpers
         [Theory]
         [Trait("Category", "Unit")]
         [InlineData("dni.ru.html")]
+        [InlineData("rg.ru.html")]
         public void ShouldFindRssPagesOnLocalFiles(string htmlFilePath)
         {
             var massMedia = new MassMedia();
@@ -46,7 +47,16 @@ namespace MediaGrabber.Library.Tests.Helpers
         [InlineData("abc.ru.html")]
         public void ShouldFindRssPagesOnRemoteWebSite(string url)
         {
+            var massMedia = new MassMedia()
+            {
+                MainUrl = url,
+                Encoding = "utf8",
+                Id = 1
+            };
 
+            var rssPageFinder = new RssPageFinder(massMedia);
+            var rssPages = rssPageFinder.FindRssPages();
+            Assert.True(rssPages.Count() > 0);
         }
 
         [Theory]
@@ -55,6 +65,40 @@ namespace MediaGrabber.Library.Tests.Helpers
         public void ShouldNotFindRssPagesOnRemoteWebSite(string url)
         {
 
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.91.xml")]
+        [InlineData("RssPage_v0.92.xml")]
+        [InlineData("RssPage_v2.0.xml")]
+        [InlineData("RssPage_v2.0_2.xml")]
+        public void ShoudIdentifyPageAsValidRss(string htmlFilePath)
+        {
+            var massMedia = new MassMedia();
+            var binPath = Environment.CurrentDirectory;
+            htmlFilePath =
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "ValidRssPages", htmlFilePath);
+            var pageHtml = File.ReadAllText(htmlFilePath);
+            var rssPageFinder = new RssPageFinder(massMedia);
+            var valid = rssPageFinder.IsValidRssPage(pageHtml);
+            Assert.True(valid);
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("inv_1.html")]
+        [InlineData("inv_2.xml")]
+        public void ShoudNotIdentifyPageAsValidRss(string htmlFilePath)
+        {
+            var massMedia = new MassMedia();
+            var binPath = Environment.CurrentDirectory;
+            htmlFilePath =
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "InvalidRssPages", htmlFilePath);
+            var pageHtml = File.ReadAllText(htmlFilePath);
+            var rssPageFinder = new RssPageFinder(massMedia);
+            var valid = rssPageFinder.IsValidRssPage(pageHtml);
+            Assert.False(valid);
         }
     }
 }
