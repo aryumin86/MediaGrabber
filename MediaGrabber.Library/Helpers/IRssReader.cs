@@ -5,6 +5,9 @@ using System.Text;
 
 namespace MediaGrabber.Library.Helpers
 {
+    /// <summary>
+    /// Reads RSS xml and gets all articles data from it.
+    /// </summary>
     public interface IRssReader
     {
         /// <summary>
