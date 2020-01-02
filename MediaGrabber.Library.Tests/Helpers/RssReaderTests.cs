@@ -1,17 +1,119 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MediaGrabber.Library.Entities;
 using Xunit;
+using System.Linq;
+using MediaGrabber.Library.Helpers;
+using System.IO;
 
 namespace MediaGrabber.Library.Tests.Helpers
 {
     public class RssReaderTests
     {
-        [Fact]
-        public void ShouldCollectArticlesFromRss()
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.91.xml")]
+        [InlineData("RssPage_v0.92.xml")]
+        [InlineData("RssPage_v2.0.xml")]
+        [InlineData("RssPage_v2.0_2.xml")]
+        public void ShouldCollectArticlesFromRss(string fileName)
         {
+            var mm = new MassMedia("aaa.ru"){
+                Id = 1
+            };
+            var rssReader = new RssReader(mm);
+
+            var binPath = Environment.CurrentDirectory;
+            var xmlRssPageFilePath = 
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "ValidRssPages", fileName);
+            var xmlContent = File.ReadAllText(xmlRssPageFilePath);
+
+            var rssPage = new RssPage(){
+                 XmlContent = xmlContent
+            };
+            var result = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
+
+            Assert.True(result.Count() > 0);
+            foreach(var a in result){
+                Assert.True(a.Url != null);
+                Assert.True(a.Title != null);
+            }
+            Assert.True(result.Any(x => x.BodyPart != null));
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v2.0.xml")]
+        [InlineData("RssPage_v2.0_2.xml")]
+        public void ShouldCollectArticlesWithPubDateAndOtehrDataFromRss(string fileName){
+            var mm = new MassMedia("aaa.ru"){
+                Id = 1
+            };
+            var rssReader = new RssReader(mm);
+
+            var binPath = Environment.CurrentDirectory;
+            var xmlRssPageFilePath = 
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "ValidRssPages", fileName);
+            var xmlContent = File.ReadAllText(xmlRssPageFilePath);
+
+            var rssPage = new RssPage(){
+                 XmlContent = xmlContent
+            };
+            var result = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
+
+            Assert.True(result.Count() > 0);
+            foreach(var a in result){
+                Assert.True(a.Url != null);
+                Assert.True(a.Title != null);
+            }
+
+            Assert.True(result.Any(x => x.WhenPublished.Year > 2000));
+            Assert.True(result.Any(x => x.BodyPart != null));
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.91.xml")]
+        public void ShouldCollectArticlesWithPubDate_RSSv091(string fileName){
 
         }
 
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.92.xml")]
+        public void ShouldCollectArticlesWithPubDate_RSSv092(string fileName){
+
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v2.0.xml")]
+        [InlineData("RssPage_v2.0_2.xml")]
+        public void ShouldCollectArticlesWithPubDate_RSSv20(string fileName){
+
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.91.xml")]
+        public void ShouldCollectArticlesWithLink_RSSv091(string fileName){
+
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v0.92.xml")]
+        public void ShouldCollectArticlesWithLink_RSSv092(string fileName){
+
+        }
+
+        [Theory]
+        [Trait("Category", "Unit")]
+        [InlineData("RssPage_v2.0.xml")]
+        [InlineData("RssPage_v2.0_2.xml")]
+        public void ShouldCollectArticlesWithLink_RSSv20(string fileName){
+
+        }
     }
 }

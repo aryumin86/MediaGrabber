@@ -10,6 +10,7 @@ namespace MediaGrabber.Library.Entities
         public int Id { get; set; }
         public string Url { get; set; }
         public int MassMediaId { get; set; }
-        RssVersion RssVersion { get; set; }
+        public RssVersion RssVersion { get; set; }
+        public string XmlContent {get; set;}
     }
 }

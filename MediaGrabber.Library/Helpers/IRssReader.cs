@@ -16,5 +16,12 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="url"></param>
         /// <returns></returns>
         IEnumerable<Article> GetArticlesBasicDataFromRssPage(RssPage rssPage);
+
+        /// <summary>
+        /// Does xml has valid format as RSS page.
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        bool IsValidRssPage(string xml);
     }
 }
