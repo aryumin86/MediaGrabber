@@ -32,6 +32,7 @@ namespace MediaGrabber.Library.Tests.Helpers
         [Theory]
         [Trait("Category", "Unit")]
         [InlineData("http://dni.ru", "http://subdomain.nochi.ru")]
+        [InlineData("https://aif.ru/","file:///rss/all.php")]
         public void IsLocalLink_ShouldReturnFalseIfItIsNotMassMediaSubdomainLink(string massMediaMainUrl, string massMediaSubDomainUrl)
         {
             var massMedia = new MassMedia(massMediaMainUrl);
@@ -89,6 +90,7 @@ namespace MediaGrabber.Library.Tests.Helpers
 
             var rssPageFinder = new RssPageFinder(massMedia);
             var rssPages = rssPageFinder.FindRssPages();
+                
             Assert.True(rssPages.Count() > 0);
         }
 

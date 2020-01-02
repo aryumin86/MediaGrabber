@@ -15,6 +15,6 @@ namespace MediaGrabber.Library.Helpers
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public IEnumerable<Article> GetArticlesBasicDataFromRssPage(RssPage rssPage);
+        IEnumerable<Article> GetArticlesBasicDataFromRssPage(RssPage rssPage);
     }
 }

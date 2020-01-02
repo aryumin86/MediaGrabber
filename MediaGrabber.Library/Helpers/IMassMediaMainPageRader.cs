@@ -14,6 +14,6 @@ namespace MediaGrabber.Library.Helpers
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public string GetArticlesLinks(string url);
+        string GetArticlesLinks(string url);
     }
 }

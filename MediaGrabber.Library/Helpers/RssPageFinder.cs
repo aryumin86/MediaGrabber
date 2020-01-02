@@ -49,9 +49,10 @@ namespace MediaGrabber.Library.Helpers
             // change links protocol if needed
             mayBeBasePageRssLinks = mayBeBasePageRssLinks
                 .Where(l => NormalLinkToSomePage(l))
+                .Select(l => ChangeProtokolIfNeeded(l))
                 .Where(l => IsLocalLink(l))
-                .Select(l => CreateAbsoluteUrlIfRelative(l))
-                .Select(l => ChangeProtokolIfNeeded(l));
+                .Select(l => CreateAbsoluteUrlIfRelative(l));
+                
 
             // opens each rss page link with pauses and check each for being a valid rss page.
             // If it is a valid rss page - adds it to result list.
@@ -72,9 +73,10 @@ namespace MediaGrabber.Library.Helpers
                         var mayBeRssLinks = ParsePageforMayBeRssUrls(pageHtml);
                         var mayBeRssPageLinks2 = mayBeRssLinks
                             .Where(x => NormalLinkToSomePage(x))
+                            .Select(x => ChangeProtokolIfNeeded(x))
                             .Where(x => IsLocalLink(x))
-                            .Select(x => CreateAbsoluteUrlIfRelative(x))
-                            .Select(x => ChangeProtokolIfNeeded(x));
+                            .Select(x => CreateAbsoluteUrlIfRelative(x));
+                            
 
                         foreach (var l2 in mayBeRssPageLinks2)
                         {
@@ -300,10 +302,16 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         private bool IsSubDomain(Uri mainDomainLink, Uri mayBeSubDomainLink)
         {
+            if(!mayBeSubDomainLink.Scheme.ToUpperInvariant().StartsWith("HTTP"))
+                return false;
+
             var nodes = mayBeSubDomainLink.Host.Split('.')
                 .Where(n => n.ToUpperInvariant() != "WWW")
                 .ToArray();
             int startNode = 0;
+
+            if(nodes.Count() == 1)
+                return false;
 
             if (mainDomainLink.Host.Split('.')
                 .Where(n => n.ToUpperInvariant() != "WWW")
