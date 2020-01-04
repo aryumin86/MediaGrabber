@@ -1,105 +1,22 @@
-
-<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hacker News: Newest</title><link>https://news.ycombinator.com/newest</link><description>Hacker News RSS</description><docs>https://hnrss.org/</docs><generator>go-hnrss v1.0-10-g4f1b850</generator><lastBuildDate>Tue, 31 Dec 2019 16:00:18 +0000</lastBuildDate><atom:link href="https://hnrss.org/newest" rel="self" type="application/rss+xml"></atom:link><item><title><![CDATA[Ask HN: Best carry-on luggage for hackers who travel?]]></title><description><![CDATA[
-<p>Hello HN and sorry for the potentially OT question.<p>I am required to travel a bit for work, including domestic (US) and international, and would like to optimize my life a bit more by making sure I never have to check luggage on a flight even when I have to stay away for a week or two, it's just too time consuming and error prone.<p>I am thus in the market for a good carry-on with optimized space. As I started my research, one obvious design choice is to go for a two wheels rather than a four wheels, since the space in the second one seems to be much more efficient.<p>Currently eyeing the TravelPro Maxlite 5 international expandable carry-on [1] with a declared 45L capacity, but was wondering if any experienced traveler has some interesting recommendation.<p>Thanks and Happy New Year!<p>[1] https://travelpro.com/collections/carry-on-luggage/products/maxlite%C2%AE-5-international-expandable-carry-on-rollaboard%C2%AE</p>
-<hr>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921880">https://news.ycombinator.com/item?id=21921880</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:58:32 +0000</pubDate><link>https://news.ycombinator.com/item?id=21921880</link><dc:creator>deanmoriarty</dc:creator><comments>https://news.ycombinator.com/item?id=21921880</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921880</guid></item><item><title><![CDATA[Strange Superconductor Sends Electrons Both Ways]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.scientificamerican.com/article/strange-superconductor-sends-electrons-both-ways/">https://www.scientificamerican.com/article/strange-superconductor-sends-electrons-both-ways/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921879">https://news.ycombinator.com/item?id=21921879</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:58:31 +0000</pubDate><link>https://www.scientificamerican.com/article/strange-superconductor-sends-electrons-both-ways/</link><dc:creator>LinuxBender</dc:creator><comments>https://news.ycombinator.com/item?id=21921879</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921879</guid></item><item><title><![CDATA[Warren Buffett on why companies cannot be moral arbiters]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.ft.com/content/ebbc9b46-1754-11ea-9ee4-11f260415385">https://www.ft.com/content/ebbc9b46-1754-11ea-9ee4-11f260415385</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921877">https://news.ycombinator.com/item?id=21921877</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:58:27 +0000</pubDate><link>https://www.ft.com/content/ebbc9b46-1754-11ea-9ee4-11f260415385</link><dc:creator>hhs</dc:creator><comments>https://news.ycombinator.com/item?id=21921877</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921877</guid></item><item><title><![CDATA[Australia’s Angry Summer: This Is What Climate Change Looks Like]]></title><description><![CDATA[
-<p>Article URL: <a href="https://blogs.scientificamerican.com/observations/australias-angry-summer-this-is-what-climate-change-looks-like/">https://blogs.scientificamerican.com/observations/australias-angry-summer-this-is-what-climate-change-looks-like/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921870">https://news.ycombinator.com/item?id=21921870</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:57:54 +0000</pubDate><link>https://blogs.scientificamerican.com/observations/australias-angry-summer-this-is-what-climate-change-looks-like/</link><dc:creator>LinuxBender</dc:creator><comments>https://news.ycombinator.com/item?id=21921870</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921870</guid></item><item><title><![CDATA[Infographic - Global Remote Work in 2020 Statistics]]></title><description><![CDATA[
-<p>Article URL: <a href="https://workremote.us/infographic-global-remote-work-in-2020-statistics/">https://workremote.us/infographic-global-remote-work-in-2020-statistics/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921867">https://news.ycombinator.com/item?id=21921867</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:56:59 +0000</pubDate><link>https://workremote.us/infographic-global-remote-work-in-2020-statistics/</link><dc:creator>sinanata</dc:creator><comments>https://news.ycombinator.com/item?id=21921867</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921867</guid></item><item><title><![CDATA[Employee error to blame for data leak, Wyze says]]></title><description><![CDATA[
-<p>Article URL: <a href="https://arstechnica.com/tech-policy/2019/12/surveillance-camera-company-wyze-confirms-leak-of-user-data/">https://arstechnica.com/tech-policy/2019/12/surveillance-camera-company-wyze-confirms-leak-of-user-data/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921864">https://news.ycombinator.com/item?id=21921864</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:56:53 +0000</pubDate><link>https://arstechnica.com/tech-policy/2019/12/surveillance-camera-company-wyze-confirms-leak-of-user-data/</link><dc:creator>LinuxBender</dc:creator><comments>https://news.ycombinator.com/item?id=21921864</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921864</guid></item><item><title><![CDATA[US Coast Guard discloses Ryuk ransomware infection at maritime facility]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.zdnet.com/article/us-coast-guard-discloses-ryuk-ransomware-infection-at-maritime-facility/">https://www.zdnet.com/article/us-coast-guard-discloses-ryuk-ransomware-infection-at-maritime-facility/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921851">https://news.ycombinator.com/item?id=21921851</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:56:01 +0000</pubDate><link>https://www.zdnet.com/article/us-coast-guard-discloses-ryuk-ransomware-infection-at-maritime-facility/</link><dc:creator>LinuxBender</dc:creator><comments>https://news.ycombinator.com/item?id=21921851</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921851</guid></item><item><title><![CDATA[Apple Accused of Crackdown on Jailbreaking]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.bbc.com/news/technology-50956680">https://www.bbc.com/news/technology-50956680</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921840">https://news.ycombinator.com/item?id=21921840</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:55:11 +0000</pubDate><link>https://www.bbc.com/news/technology-50956680</link><dc:creator>LinuxBender</dc:creator><comments>https://news.ycombinator.com/item?id=21921840</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921840</guid></item><item><title><![CDATA[Ask HN: What are you working on?]]></title><description><![CDATA[
-<p>As we start a new decade, what are you spending your time on? Are you starting something new? Finishing something old? What are you working on?</p>
-<hr>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921820">https://news.ycombinator.com/item?id=21921820</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:52:51 +0000</pubDate><link>https://news.ycombinator.com/item?id=21921820</link><dc:creator>_-___________-_</dc:creator><comments>https://news.ycombinator.com/item?id=21921820</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921820</guid></item><item><title><![CDATA[Show HN: Generate automated UI tests with the click of a button]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.qanairy.com">https://www.qanairy.com</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921817">https://news.ycombinator.com/item?id=21921817</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:52:38 +0000</pubDate><link>https://www.qanairy.com</link><dc:creator>deepthought42</dc:creator><comments>https://news.ycombinator.com/item?id=21921817</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921817</guid></item><item><title><![CDATA[Barcelona to open southern Europe's biggest low-emissions zone]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.theguardian.com/world/2019/dec/31/barcelona-to-open-southern-europes-biggest-low-emissions-zone">https://www.theguardian.com/world/2019/dec/31/barcelona-to-open-southern-europes-biggest-low-emissions-zone</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921801">https://news.ycombinator.com/item?id=21921801</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:50:55 +0000</pubDate><link>https://www.theguardian.com/world/2019/dec/31/barcelona-to-open-southern-europes-biggest-low-emissions-zone</link><dc:creator>tom_mellior</dc:creator><comments>https://news.ycombinator.com/item?id=21921801</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921801</guid></item><item><title><![CDATA[Formal Reasoning About Programs (2017) [pdf]]]></title><description><![CDATA[
-<p>Article URL: <a href="http://adam.chlipala.net/frap/frap_book.pdf">http://adam.chlipala.net/frap/frap_book.pdf</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921795">https://news.ycombinator.com/item?id=21921795</a></p>
-<p>Points: 2</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:50:22 +0000</pubDate><link>http://adam.chlipala.net/frap/frap_book.pdf</link><dc:creator>p0llard</dc:creator><comments>https://news.ycombinator.com/item?id=21921795</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921795</guid></item><item><title><![CDATA[My Thoughts on “Winning” People over Techniques]]></title><description><![CDATA[
-<p>Article URL: <a href="https://medium.com/afwp/my-thoughts-on-winning-people-over-techniques-4d97e9172fb4">https://medium.com/afwp/my-thoughts-on-winning-people-over-techniques-4d97e9172fb4</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921774">https://news.ycombinator.com/item?id=21921774</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:48:50 +0000</pubDate><link>https://medium.com/afwp/my-thoughts-on-winning-people-over-techniques-4d97e9172fb4</link><dc:creator>Lorenz_Duremdes</dc:creator><comments>https://news.ycombinator.com/item?id=21921774</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921774</guid></item><item><title><![CDATA[Atypical: A Differently-Optimized Type System]]></title><description><![CDATA[
-<p>Article URL: <a href="https://kronopath.net/blog/atypical-a-differently-optimized-type-system/">https://kronopath.net/blog/atypical-a-differently-optimized-type-system/</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921749">https://news.ycombinator.com/item?id=21921749</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:47:03 +0000</pubDate><link>https://kronopath.net/blog/atypical-a-differently-optimized-type-system/</link><dc:creator>joubert</dc:creator><comments>https://news.ycombinator.com/item?id=21921749</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921749</guid></item><item><title><![CDATA[Intratumoral injection of flu shot serves as immunotherapy for cancer]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.pnas.org/content/early/2019/12/26/1904022116">https://www.pnas.org/content/early/2019/12/26/1904022116</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921743">https://news.ycombinator.com/item?id=21921743</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:46:12 +0000</pubDate><link>https://www.pnas.org/content/early/2019/12/26/1904022116</link><dc:creator>EndXA</dc:creator><comments>https://news.ycombinator.com/item?id=21921743</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921743</guid></item><item><title><![CDATA[Human Psycholinguists: A Critical Appraisal]]></title><description><![CDATA[
-<p>Article URL: <a href="https://nostalgebraist.tumblr.com/post/189965935059/human-psycholinguists-a-critical-appraisal">https://nostalgebraist.tumblr.com/post/189965935059/human-psycholinguists-a-critical-appraisal</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921742">https://news.ycombinator.com/item?id=21921742</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:46:08 +0000</pubDate><link>https://nostalgebraist.tumblr.com/post/189965935059/human-psycholinguists-a-critical-appraisal</link><dc:creator>randallsquared</dc:creator><comments>https://news.ycombinator.com/item?id=21921742</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921742</guid></item><item><title><![CDATA[How the intro vocal effects for Track 10 by Charli XCX were made using code]]></title><description><![CDATA[
-<p>Article URL: <a href="http://youtube.com/watch?v=2DLGZHo4Ygo">http://youtube.com/watch?v=2DLGZHo4Ygo</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921718">https://news.ycombinator.com/item?id=21921718</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:43:53 +0000</pubDate><link>http://youtube.com/watch?v=2DLGZHo4Ygo</link><dc:creator>jarmitage</dc:creator><comments>https://news.ycombinator.com/item?id=21921718</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921718</guid></item><item><title><![CDATA[Think twice about posting once]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.cbc.ca/radio/quirks/nov-30-tipping-into-climate-catastrophe-blue-whale-heartbeat-thinking-twice-on-fake-news-and-more-1.5377120/think-twice-about-posting-once-breaking-the-fake-news-cycle-1.5377192">https://www.cbc.ca/radio/quirks/nov-30-tipping-into-climate-catastrophe-blue-whale-heartbeat-thinking-twice-on-fake-news-and-more-1.5377120/think-twice-about-posting-once-breaking-the-fake-news-cycle-1.5377192</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921710">https://news.ycombinator.com/item?id=21921710</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:43:01 +0000</pubDate><link>https://www.cbc.ca/radio/quirks/nov-30-tipping-into-climate-catastrophe-blue-whale-heartbeat-thinking-twice-on-fake-news-and-more-1.5377120/think-twice-about-posting-once-breaking-the-fake-news-cycle-1.5377192</link><dc:creator>colinprince</dc:creator><comments>https://news.ycombinator.com/item?id=21921710</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921710</guid></item><item><title><![CDATA[Ask HN: Is there an API for (upcoming) API changes?]]></title><description><![CDATA[
-<p>As shopify/wordpress/google/fb/twitter etc. change their APIs, is there a notification system or API for developers who develop on their platforms? Email is the current way to get these updates, but is there a consolidated way to get these updates in one place?</p>
-<hr>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921704">https://news.ycombinator.com/item?id=21921704</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:42:31 +0000</pubDate><link>https://news.ycombinator.com/item?id=21921704</link><dc:creator>dhruvkar</dc:creator><comments>https://news.ycombinator.com/item?id=21921704</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921704</guid></item><item><title><![CDATA[Simon Parkin’s best video games of 2019]]></title><description><![CDATA[
-<p>Article URL: <a href="https://www.theguardian.com/games/2019/dec/31/simon-parkin-best-video-games-of-2019">https://www.theguardian.com/games/2019/dec/31/simon-parkin-best-video-games-of-2019</a></p>
-<p>Comments URL: <a href="https://news.ycombinator.com/item?id=21921703">https://news.ycombinator.com/item?id=21921703</a></p>
-<p>Points: 1</p>
-<p># Comments: 0</p>
-]]></description><pubDate>Tue, 31 Dec 2019 15:42:31 +0000</pubDate><link>https://www.theguardian.com/games/2019/dec/31/simon-parkin-best-video-games-of-2019</link><dc:creator>DrNuke</dc:creator><comments>https://news.ycombinator.com/item?id=21921703</comments><guid isPermaLink="false">https://news.ycombinator.com/item?id=21921703</guid></item></channel></rss>
+<?xml version="1.0" ?>
+<rss version="2.0">
+<channel>
+  <title>Ajax and XUL</title>
+  <link>https://www.xul.fr/en/</link>
+  <description>XML graphical interface etc...</description>
+  <image>
+      <url>https://www.xul.fr/xul-icon.gif</url>
+      <link>https://www.xul.fr/en/index.php</link>
+  </image>
+  <item>
+      <title>News  of today</title>
+      <link>https://www.xul.fr/en-xml-rss.html</link>
+      <description>All you need to know about RSS</description>
+  </item>
+  <item>
+      <title>News of tomorrows</title>
+      <link>https://www.xul.fr/en-xml-rdf.html</link>
+      <description>And now, all about RDF</description>
+    </item>
+</channel>
+</rss> 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Linq;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -25,12 +26,70 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         public IEnumerable<Article> GetArticlesBasicDataFromRssPage(RssPage rssPage)
         {
+            var result = new List<Article>();
+
             if(!IsValidRssPage(rssPage.XmlContent)){
                 throw new FormatException("loaded rss page has invalid format");
             }
             else{
-                throw new NotImplementedException();
+                var xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(rssPage.XmlContent);
+                var rssVersion = xmlDoc.DocumentElement.GetAttribute("version");
+                switch(rssVersion){
+                    case "0.91":
+                    rssPage.RssVersion = Enums.RssVersion.V0dot91;
+                        break;
+                    case "0.92": 
+                    rssPage.RssVersion = Enums.RssVersion.V0dot92;
+                        break;
+                    case "2.0":
+                    rssPage.RssVersion = Enums.RssVersion.V2dot0;
+                        break;
+                }
+                var elems = xmlDoc.DocumentElement.GetElementsByTagName("item");
+                foreach(XmlElement elem in elems){
+                    Article a = null;
+                    string link = null;
+                    string title = null;
+                    DateTime pubDate = DateTime.MinValue;
+                    string description = null;
+
+                    if(rssPage.RssVersion == Enums.RssVersion.V0dot92){
+                        throw new NotImplementedException();
+                    }
+                    else{ //v2.0 or v1.91
+                        foreach(var n in elem.ChildNodes){
+                            var node = n as XmlNode;
+                            switch(node.Name){
+                                case "title":
+                                    title = node.InnerText;
+                                    break;
+                                case "link":
+                                    link = node.InnerText;
+                                    break;
+                                case "description":
+                                    description = node.InnerText;
+                                    break;
+                                case "pubDate":
+                                    pubDate = DateTime.Parse(node.InnerText);
+                                    break;
+                            }
+                        }
+
+                        if(link != null){
+                            a = new Article(){
+                                Url = link,
+                                Title = title,
+                                BodyPart = description,
+                                WhenPublished = pubDate
+                            };
+                            result.Add(a);
+                        }
+                    }
+                }
             }
+
+            return result;
         }
 
         /// <summary>

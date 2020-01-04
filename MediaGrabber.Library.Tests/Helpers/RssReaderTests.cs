@@ -68,52 +68,10 @@ namespace MediaGrabber.Library.Tests.Helpers
                 Assert.True(a.Title != null);
             }
 
+            Assert.True(result.Any(x => x.Url != null));
+            Assert.True(result.Any(x => x.Title != null));
             Assert.True(result.Any(x => x.WhenPublished.Year > 2000));
             Assert.True(result.Any(x => x.BodyPart != null));
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v0.91.xml")]
-        public void ShouldCollectArticlesWithPubDate_RSSv091(string fileName){
-
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v0.92.xml")]
-        public void ShouldCollectArticlesWithPubDate_RSSv092(string fileName){
-
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v2.0.xml")]
-        [InlineData("RssPage_v2.0_2.xml")]
-        public void ShouldCollectArticlesWithPubDate_RSSv20(string fileName){
-
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v0.91.xml")]
-        public void ShouldCollectArticlesWithLink_RSSv091(string fileName){
-
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v0.92.xml")]
-        public void ShouldCollectArticlesWithLink_RSSv092(string fileName){
-
-        }
-
-        [Theory]
-        [Trait("Category", "Unit")]
-        [InlineData("RssPage_v2.0.xml")]
-        [InlineData("RssPage_v2.0_2.xml")]
-        public void ShouldCollectArticlesWithLink_RSSv20(string fileName){
-
         }
     }
 }
