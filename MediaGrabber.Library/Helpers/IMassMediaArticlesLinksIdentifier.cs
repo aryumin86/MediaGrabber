@@ -7,13 +7,13 @@ namespace MediaGrabber.Library.Helpers
     /// <summary>
     /// Tries to find links to articles on the main page of mass media. 
     /// </summary>
-    public interface IMassMediaMainPageRader
+    public interface IMassMediaArticlesLinksIdentifier
     {
         /// <summary>
         /// Returns all articles links from mass media page.
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        string GetArticlesLinks(string url);
+        IEnumerable<string> GetArticlesLinks(string url);
     }
 }

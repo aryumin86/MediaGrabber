@@ -17,7 +17,7 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
             MassMedia = massMedia;
         }
 
-        public override IEnumerable<MassMediaRssPage> GetRssPages()
+        public override IEnumerable<RssPage> GetRssPages()
         {
             throw new NotImplementedException();
         }
@@ -28,11 +28,6 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
         }
 
         public override IEnumerable<MayBeArticlePage> GetArticlesFromMainPage()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override IEnumerable<MayBeArticlePage> GetArticlesFromCategoriesPagesPage()
         {
             throw new NotImplementedException();
         }

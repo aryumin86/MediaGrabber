@@ -13,7 +13,7 @@ namespace MediaGrabber.Library.Entities
         public DateTime WhenAdded { get; set; }
         public string MainUrl { get; set; }
         public Uri Uri { get; set; }
-        public IEnumerable<MassMediaRssPage> RssPages { get; set; }        
+        public IEnumerable<RssPage> RssPages { get; set; }
         public IEnumerable<ParsingRule> ParsingRules { get; set; }
         public string Encoding {get; set;}
         public WebSiteOpeningType WebSiteOpeningType {get; set;}
