@@ -37,7 +37,6 @@ namespace MediaGrabber.Library.Tests.Helpers
             Assert.True(result.Count() > 0);
             foreach(var a in result){
                 Assert.True(a.Url != null);
-                Assert.True(a.Title != null);
             }
             Assert.True(result.Any(x => x.BodyPart != null));
         }
@@ -46,7 +45,7 @@ namespace MediaGrabber.Library.Tests.Helpers
         [Trait("Category", "Unit")]
         [InlineData("RssPage_v2.0.xml")]
         [InlineData("RssPage_v2.0_2.xml")]
-        public void ShouldCollectArticlesWithPubDateAndOtehrDataFromRss(string fileName){
+        public void ShouldCollectArticlesWithOtherDataFromRss(string fileName){
             var mm = new MassMedia("aaa.ru"){
                 Id = 1
             };
@@ -65,13 +64,38 @@ namespace MediaGrabber.Library.Tests.Helpers
             Assert.True(result.Count() > 0);
             foreach(var a in result){
                 Assert.True(a.Url != null);
-                Assert.True(a.Title != null);
+            }
+            
+            Assert.True(result.Any(x => x.Title != null));
+            Assert.True(result.Any(x => x.BodyPart != null));
+        }
+
+
+        [Theory]
+        [InlineData("RssPage_v2.0_2.xml")]
+        [Trait("Category", "Unit")]
+        public void ShouldCollectArticlesWithPubDateFromRss(string fileName){
+            var mm = new MassMedia("aaa.ru"){
+                Id = 1
+            };
+            var rssReader = new RssReader(mm);
+
+            var binPath = Environment.CurrentDirectory;
+            var xmlRssPageFilePath = 
+                Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, "TestsData", "ValidRssPages", fileName);
+            var xmlContent = File.ReadAllText(xmlRssPageFilePath);
+
+            var rssPage = new RssPage(){
+                 XmlContent = xmlContent
+            };
+            var result = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
+
+            Assert.True(result.Count() > 0);
+            foreach(var a in result){
+                Assert.True(a.Url != null);
             }
 
-            Assert.True(result.Any(x => x.Url != null));
-            Assert.True(result.Any(x => x.Title != null));
-            Assert.True(result.Any(x => x.WhenPublished.Year > 2000));
-            Assert.True(result.Any(x => x.BodyPart != null));
+            Assert.True(result.Any(x => x.WhenPublished.Year > 1970));
         }
     }
 }

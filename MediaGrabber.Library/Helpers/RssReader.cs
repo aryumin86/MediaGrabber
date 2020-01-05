@@ -55,7 +55,23 @@ namespace MediaGrabber.Library.Helpers
                     string description = null;
 
                     if(rssPage.RssVersion == Enums.RssVersion.V0dot92){
-                        throw new NotImplementedException();
+                        foreach(var n in elem.ChildNodes){
+                            var node = n as XmlNode;
+                            switch(node.Name){
+                                case "title":
+                                    title = node.InnerText;
+                                    break;
+                                case "source":
+                                    link = node.Attributes["url"].InnerText;
+                                    break;
+                                case "description":
+                                    description = node.InnerText;
+                                    break;
+                                case "pubDate":
+                                    pubDate = DateTime.Parse(node.InnerText);
+                                    break;
+                            }
+                        }
                     }
                     else{ //v2.0 or v1.91
                         foreach(var n in elem.ChildNodes){
@@ -75,16 +91,16 @@ namespace MediaGrabber.Library.Helpers
                                     break;
                             }
                         }
+                    }
 
-                        if(link != null){
-                            a = new Article(){
-                                Url = link,
-                                Title = title,
-                                BodyPart = description,
-                                WhenPublished = pubDate
-                            };
-                            result.Add(a);
-                        }
+                    if(link != null){
+                        a = new Article(){
+                            Url = link,
+                            Title = title,
+                            BodyPart = description,
+                            WhenPublished = pubDate
+                        };
+                        result.Add(a);
                     }
                 }
             }
