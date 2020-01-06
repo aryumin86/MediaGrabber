@@ -38,7 +38,7 @@ namespace MediaGrabber.Library.Tests.Helpers
             foreach(var a in result){
                 Assert.True(a.Url != null);
             }
-            Assert.True(result.Any(x => x.BodyPart != null));
+            Assert.True(result.Where(x => x.BodyPart != null).Count() > 0);
         }
 
         [Theory]
@@ -66,8 +66,8 @@ namespace MediaGrabber.Library.Tests.Helpers
                 Assert.True(a.Url != null);
             }
             
-            Assert.True(result.Any(x => x.Title != null));
-            Assert.True(result.Any(x => x.BodyPart != null));
+            Assert.True(result.Where(x => x.Title != null).Count() > 0);
+            Assert.True(result.Where(x => x.BodyPart != null).Count() > 0);
         }
 
 
