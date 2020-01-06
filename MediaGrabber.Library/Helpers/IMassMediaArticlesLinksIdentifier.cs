@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaGrabber.Library.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,6 +15,6 @@ namespace MediaGrabber.Library.Helpers
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        IEnumerable<string> GetArticlesLinks(string url);
+        IEnumerable<string> GetArticlesLinks(MassMedia massMedia);
     }
 }

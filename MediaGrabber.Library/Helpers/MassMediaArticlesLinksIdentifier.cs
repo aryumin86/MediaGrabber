@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaGrabber.Library.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace MediaGrabber.Library.Helpers
             "education"
         };
 
-        public IEnumerable<string> GetArticlesLinks(string url)
+        public IEnumerable<string> GetArticlesLinks(MassMedia massMedia)
         {
             throw new NotImplementedException();
         }

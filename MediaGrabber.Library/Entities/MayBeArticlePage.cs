@@ -21,8 +21,7 @@ namespace MediaGrabber.Library.Entities
         public string BodyHtml { get; set; }
         /// <summary>
         /// One of elements with these XPaths probably contains article text.
-        /// Ideally it is an Id of tag
-        /// 
+        /// Ideally it is an Id of tag.
         /// </summary>
         public SortedList<int, MayBeArticleContainer> MayBeArticleContainers { get; set; }
         public string ProbableArticleText { get; set; }

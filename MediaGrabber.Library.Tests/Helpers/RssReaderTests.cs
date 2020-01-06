@@ -95,7 +95,7 @@ namespace MediaGrabber.Library.Tests.Helpers
                 Assert.True(a.Url != null);
             }
 
-            Assert.True(result.Any(x => x.WhenPublished.Year > 1970));
+            Assert.True(result.Where(x => x.WhenPublished.Year > 1970).Count() > 0);
         }
     }
 }
