@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
+namespace MediaGrabber.Library.MMParseRulesIdentifier
 {
     public abstract class IMassMediaParseRulesIdentifier
     {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
+namespace MediaGrabber.Library.MMParseRulesIdentifier
 {
     /// <summary>
     /// This identifier works with only one Mass Media
@@ -14,11 +14,9 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
     public class MassMediaParseRulesIdentifier : IMassMediaParseRulesIdentifier
     {
         private MassMedia _massMedia;
-        //private IEnumerable<MayBeArticlePage> _mayBeArticlePages;
         public MassMediaParseRulesIdentifier(MassMedia massMedia)
         {
             _massMedia = massMedia;
-            //_mayBeArticlePages = new List<MayBeArticlePage>();
         }
 
         /// <summary>
@@ -69,30 +67,33 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
             if(rssPages == null || !rssPages.Any())
             {
                 var mayBeArticles = GetArticlesFromMainPage();
-                result = ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPages().FirstOrDefault();
+                result = ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions().FirstOrDefault();
+                //TODO Process rules - find most popular.
+                //
+                //
+
+                if (result != null)
+                    return result;
+            }
+
+            // if first way using RSS pages had no success:
+            var rules = new List<ParsingRule>();
+            foreach(var rssPage in rssPages)
+            {
+                var mayBeArticles = GetArticlesFromRssPage(rssPage);
+                var rule = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(mayBeArticles, rssPage)
+                    .FirstOrDefault();
+                if (rule != null)
+                    rules.Add(rule);
+
                 //TODO Process rules - find most popular.
                 //
                 //
             }
-            else
-            {
-                var rules = new List<ParsingRule>();
-                foreach(var rssPage in rssPages)
-                {
-                    var mayBeArticles = GetArticlesFromRssPage(rssPage);
-                    var rule = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPages(mayBeArticles, rssPage)
-                        .FirstOrDefault();
-                    if (rule != null)
-                        rules.Add(rule);
-
-                    //TODO Process rules - find most popular.
-                    //
-                    //
-                }
-                // here we can use 'description' elements if there in rss
-                // in order to identify article text on the page.
+            // here we can use 'description' elements if there in rss
+            // in order to identify article text on the page.
                 
-            }
+            
 
             return result;
         }
@@ -110,11 +111,36 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
         }
 
         /// <summary>
-        /// Process articles to identify parsing rules using RSS pages data.
+        /// Process articles to identify parsing rules using RSS pages data where
+        /// RSS item elements have description elements.
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPages(IEnumerable<MayBeArticlePage> articles, RssPage rssPage)
+        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles, RssPage rssPage, int minArticlesWithDescriptin = 3)
+        {
+            IEnumerable<ParsingRule> result = null;
+
+            // Filtering artucles: getting MayBeArticlePage objects collected 
+            // from RSS pages which has a description tag
+
+            // If there are at least 'minArticlesWithDescriptin' such articles we use them for 
+            // identifying containers which contain article text on article page
+
+            // Otherwise if there are less than 'minArticlesWithDescriptin' articles 
+            // that have description from RSS
+            // other method should be used: null will be returned;
+
+            // Articles with containers are opened
+
+            return result;
+        }
+
+        /// <summary>
+        /// Opens article's url.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private string OpenArticleUrl(string html)
         {
             throw new NotImplementedException();
         }
@@ -124,7 +150,7 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPages()
+        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions()
         {
             throw new NotImplementedException();
         }
@@ -152,6 +178,18 @@ namespace MediaGrabber.Library.MassMediaParseRulesIdentifier
         /// <param name="doc"></param>
         /// <returns></returns>
         private string FindBestIdXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Tries to find node of html element where certain text is presented.
+        /// It should be unique text coincidences across all nodes.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private HtmlNode FindNodeWithText(string text, string html)
         {
             throw new NotImplementedException();
         }
