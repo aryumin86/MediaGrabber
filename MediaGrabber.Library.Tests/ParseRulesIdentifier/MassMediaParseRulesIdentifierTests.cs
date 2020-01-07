@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using MediaGrabber.Library.MMParseRulesIdentifier;
+using MediaGrabber.Library.ParseRulesIdentifier;
 using MediaGrabber.Library.Helpers;
 
-namespace MediaGrabber.Library.Tests.MassMediaParseRulesIdentifier
+namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
 {
     public class MassMediaParseRulesIdentifierTests
     {
@@ -22,16 +22,20 @@ namespace MediaGrabber.Library.Tests.MassMediaParseRulesIdentifier
             };
 
             var rulesIdentifier = 
-                new MediaGrabber.Library.MMParseRulesIdentifier.MassMediaParseRulesIdentifier(massMedia);
+                new MediaGrabber.Library.ParseRulesIdentifier.MassMediaParseRulesIdentifier(massMedia);
             var rssReader = new RssReader(massMedia);
 
             var rssPage = new RssPage()
             {
                 XmlContent = rssPageXml
             };
+            var rssPages = new List<RssPage>(){
+                rssPage
+            };
+            
+            var rule = rulesIdentifier.GetMostProbableParsingRule(rssPages);
 
-            var articlesWithBasicData = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
-            rulesIdentifier.GetMostProbableParsingRule();
+            Assert.NotNull(rule);
         }
 
         [Theory]

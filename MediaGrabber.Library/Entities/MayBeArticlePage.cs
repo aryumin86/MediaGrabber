@@ -26,6 +26,7 @@ namespace MediaGrabber.Library.Entities
         public SortedList<int, MayBeArticleContainer> MayBeArticleContainers { get; set; }
         public string ProbableArticleText { get; set; }
         public string ProbableArticleHtml { get; set; }
+        public string ProbableBodyPart {get; set;}
 
         /// <summary>
         /// Looking for most probable article text containers.

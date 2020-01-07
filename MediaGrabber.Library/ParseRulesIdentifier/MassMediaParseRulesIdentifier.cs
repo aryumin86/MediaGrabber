@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MediaGrabber.Library.MMParseRulesIdentifier
+namespace MediaGrabber.Library.ParseRulesIdentifier
 {
     /// <summary>
     /// This identifier works with only one Mass Media
@@ -14,20 +14,10 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
     public class MassMediaParseRulesIdentifier : IMassMediaParseRulesIdentifier
     {
         private MassMedia _massMedia;
+        private readonly int _minimumArticlesNumberWithDescriptionFromRss = 3;
         public MassMediaParseRulesIdentifier(MassMedia massMedia)
         {
             _massMedia = massMedia;
-        }
-
-        /// <summary>
-        /// Tries to get rss pages from website.
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<RssPage> GetRssPages()
-        {
-            var rssPagefinder = new RssPageFinder(_massMedia);
-            var rssPages = rssPagefinder.FindRssPages();
-            return rssPages;
         }
 
         /// <summary>
@@ -41,7 +31,8 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
             var articlesBasicData = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
             return articlesBasicData.Select(x => new MayBeArticlePage(x.Url)
             {
-                BodyHtml = x.BodyHtml
+                BodyHtml = x.BodyHtml,
+                ProbableBodyPart = x.BodyPart
             });
         }
 
@@ -60,42 +51,38 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
         /// </summary>
         /// <param name="mayBeArticlePages"></param>
         /// <returns></returns>
-        public override ParsingRule GetMostProbableParsingRule()
+        public override ParsingRule GetMostProbableParsingRule(IEnumerable<RssPage> rssPages)
         {
-            ParsingRule result = null;
-            var rssPages = GetRssPages();
-            if(rssPages == null || !rssPages.Any())
-            {
-                var mayBeArticles = GetArticlesFromMainPage();
-                result = ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions().FirstOrDefault();
-                //TODO Process rules - find most popular.
-                //
-                //
-
-                if (result != null)
-                    return result;
-            }
-
-            // if first way using RSS pages had no success:
-            var rules = new List<ParsingRule>();
-            foreach(var rssPage in rssPages)
-            {
-                var mayBeArticles = GetArticlesFromRssPage(rssPage);
-                var rule = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(mayBeArticles, rssPage)
-                    .FirstOrDefault();
-                if (rule != null)
-                    rules.Add(rule);
-
-                //TODO Process rules - find most popular.
-                //
-                //
-            }
-            // here we can use 'description' elements if there in rss
-            // in order to identify article text on the page.
+            //ParsingRule result = null;
+            IEnumerable<MayBeArticlePage> mayBeArticles = null;
+            IEnumerable<ParsingRule> rules = null;
+            if(rssPages != null && rssPages.Any()){
                 
-            
+                foreach(var rssPage in rssPages)
+                {
+                    mayBeArticles = GetArticlesFromRssPage(rssPage);
+                    if(mayBeArticles.Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart)).Count() < _minimumArticlesNumberWithDescriptionFromRss)
+                        continue;
+                    var rulesFromRssPageArticles = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(mayBeArticles);
+                    if(rules == null)
+                        rules = new List<ParsingRule>();
+                    if(rulesFromRssPageArticles != null)
+                        (rules as List<ParsingRule>).AddRange(rulesFromRssPageArticles);
+                }
 
-            return result;
+                //TODO Process rules - find most popular.
+                //
+                //
+                if(rules.Count() >= 3)
+                    return rules.First();
+            }
+
+            mayBeArticles = GetArticlesFromMainPage();
+            rules = ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(mayBeArticles);
+            //TODO Process rules - find most popular.
+            //
+            //
+            return rules.FirstOrDefault();
         }
 
         /// <summary>
@@ -116,7 +103,7 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles, RssPage rssPage, int minArticlesWithDescriptin = 3)
+        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
         {
             IEnumerable<ParsingRule> result = null;
 
@@ -125,10 +112,6 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
 
             // If there are at least 'minArticlesWithDescriptin' such articles we use them for 
             // identifying containers which contain article text on article page
-
-            // Otherwise if there are less than 'minArticlesWithDescriptin' articles 
-            // that have description from RSS
-            // other method should be used: null will be returned;
 
             // Articles with containers are opened
 
@@ -150,7 +133,7 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions()
+        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
         {
             throw new NotImplementedException();
         }

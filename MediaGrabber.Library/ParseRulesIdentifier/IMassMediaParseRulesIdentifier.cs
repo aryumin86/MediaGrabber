@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MediaGrabber.Library.MMParseRulesIdentifier
+namespace MediaGrabber.Library.ParseRulesIdentifier
 {
     public abstract class IMassMediaParseRulesIdentifier
     {
@@ -24,7 +24,7 @@ namespace MediaGrabber.Library.MMParseRulesIdentifier
         /// </summary>
         /// <param name="mayBeArticlePages"></param>
         /// <returns></returns>
-        public abstract ParsingRule GetMostProbableParsingRule();
+        public abstract ParsingRule GetMostProbableParsingRule(IEnumerable<RssPage> rssPages);
         /// <summary>
         /// Tries to identify parsing rules of mass media using rss pages or (if there are no)
         /// using just mass media pages.
