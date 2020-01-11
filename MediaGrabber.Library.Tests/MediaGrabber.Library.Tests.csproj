@@ -17,4 +17,8 @@
     <ProjectReference Include="..\MediaGrabber.Library\MediaGrabber.Library.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestsData\ArticlesHtmlAndRssPages\RssPageHasDescriptionTags\" />
+  </ItemGroup>
+
 </Project>

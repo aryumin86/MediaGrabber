@@ -63,7 +63,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
                     mayBeArticles = GetArticlesFromRssPage(rssPage);
                     if(mayBeArticles.Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart)).Count() < _minimumArticlesNumberWithDescriptionFromRss)
                         continue;
-                    var rulesFromRssPageArticles = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(mayBeArticles);
+                    var rulesFromRssPageArticles = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles);
                     if(rules == null)
                         rules = new List<ParsingRule>();
                     if(rulesFromRssPageArticles != null)
@@ -103,7 +103,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
+        public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(RssPage rssPage, IEnumerable<MayBeArticlePage> articles)
         {
             IEnumerable<ParsingRule> result = null;
 
@@ -114,6 +114,8 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
             // identifying containers which contain article text on article page
 
             // Articles with containers are opened
+
+            throw new NotImplementedException();
 
             return result;
         }
@@ -133,7 +135,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// </summary>
         /// <param name="articlesPages"></param>
         /// <returns></returns>
-        private IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
+        public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
         {
             throw new NotImplementedException();
         }

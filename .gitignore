@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/MediaGrabber.Library.Tests/TestsData/ArticlesHtmlAndRssPages/RssPageHasDescriptionTags/*.xml
+/MediaGrabber.Library.Tests/TestsData/ArticlesHtmlAndRssPages/RssPageHasDescriptionTags/*.html
