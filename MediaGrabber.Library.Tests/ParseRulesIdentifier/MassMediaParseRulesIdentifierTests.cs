@@ -25,12 +25,19 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
         public MassMediaParseRulesIdentifierTests()
         {
             var rssXmlurl = "https://andrey.moveax.ru/category/feed/%D0%92%D0%BE%D0%B7%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8-C";
+            
 
             var binPath = Environment.CurrentDirectory;
             string xmlPageFilePath =
                 Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, 
                 "TestsData", "ArticlesHtmlAndRssPages", "RssPageHasDescriptionTags", "rssPage.xml");
-            
+
+            if(!Directory.Exists(Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, 
+                "TestsData", "ArticlesHtmlAndRssPages"))){
+                Directory.CreateDirectory(Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName, 
+                    "TestsData", "ArticlesHtmlAndRssPages","RssPageHasDescriptionTags"));
+            }
+
             if (File.Exists(xmlPageFilePath))
             {
                 //clearing the folder with test data

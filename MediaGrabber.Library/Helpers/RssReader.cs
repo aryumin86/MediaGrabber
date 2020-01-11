@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Linq;
+using MediaGrabber.Library.Helpers;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -13,10 +14,12 @@ namespace MediaGrabber.Library.Helpers
     public class RssReader : IRssReader
     {
         private MassMedia _massMedia;
+        private DateTimeParseHelper _dateTimeParseHelper;
 
         public RssReader(MassMedia massMedia) 
         {
             _massMedia = massMedia;
+            _dateTimeParseHelper = new DateTimeParseHelper();
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace MediaGrabber.Library.Helpers
                                     description = node.InnerText;
                                     break;
                                 case "pubDate":
-                                    pubDate = DateTime.Parse(node.InnerText);
+                                    pubDate = _dateTimeParseHelper.TryExtractDate(node.InnerText);
                                     break;
                             }
                         }
@@ -87,7 +90,7 @@ namespace MediaGrabber.Library.Helpers
                                     description = node.InnerText;
                                     break;
                                 case "pubDate":
-                                    pubDate = DateTime.Parse(node.InnerText);
+                                    pubDate = _dateTimeParseHelper.TryExtractDate(node.InnerText);
                                     break;
                             }
                         }
