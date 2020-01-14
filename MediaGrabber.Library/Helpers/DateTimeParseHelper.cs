@@ -10,8 +10,11 @@ namespace MediaGrabber.Library.Helpers
     {
         public DateTime TryExtractDate(string dateTimeString){
             DateTime res = default(DateTime);
+            var ruRu = new CultureInfo("ru-RU"); 
+            var currentCulture = CultureInfo.CurrentCulture;
             string[] dateFormats = new string[]{
-                "ddd, d MMM yyyy HH:mm:ss", //Вс, 1 дек 2019 20:40:00 +0300
+                
+                "ddd, d MMM yyyy HH:mm:ss",
                 "ddd, d MMM yyyy HH:mm:ss",
                 "dddd, d MMMM yyyy HH:mm:ss",
                 "dddd, d MMMM yyyy HH:mm:ss",
@@ -20,23 +23,38 @@ namespace MediaGrabber.Library.Helpers
                 "ddd, d MMM yyyy h:mm:ss",
                 "ddd, d MMM yyyy h:mm:ss",
                 "ddd, d MMM yyyy H:mm:ss",
-                "ddd, d MMM yyyy H:mm:ss",
+                "ddd, d MMM yyyy H:mm:ss",                
+                "ddd, d MMM yyyy HH:mm:ss K",
+                "d MMM yyyy HH:mm:ss K",
+
             };
 
             var attempt = DateTime.TryParse(dateTimeString, out res);
+
+            if(attempt == false){
+                attempt = DateTime.TryParseExact(dateTimeString, 
+                    CultureInfo.CurrentCulture.DateTimeFormat.RFC1123Pattern, 
+                    ruRu, DateTimeStyles.None, out res);
+            }
+
+            if(attempt == false){
+                attempt = DateTime.TryParseExact(dateTimeString, 
+                    CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthGenitiveNames, 
+                    ruRu, DateTimeStyles.None, out res);
+            }
+
             if(attempt == false){
                 attempt = DateTime.TryParseExact(dateTimeString, dateFormats, 
-                    System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out res);
+                    ruRu, System.Globalization.DateTimeStyles.RoundtripKind, out res);
             }
             
             if(attempt == false){
-                var ruRu = new CultureInfo("ru-RU"); 
+                
                 attempt = DateTime.TryParseExact(dateTimeString, "U", ruRu,
                     DateTimeStyles.None, out res);
             }
 
             if(attempt == false){
-                var ruRu = new CultureInfo("ru-RU"); 
                 attempt = DateTime.TryParseExact(dateTimeString, dateFormats, ruRu,
                     DateTimeStyles.None, out res);
             }

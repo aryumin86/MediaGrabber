@@ -8,6 +8,7 @@ using MediaGrabber.Library.Helpers;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
 {
@@ -24,8 +25,7 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
         /// </summary>
         public MassMediaParseRulesIdentifierTests()
         {
-            var rssXmlurl = "https://andrey.moveax.ru/category/feed/%D0%92%D0%BE%D0%B7%D0%BC%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8-C";
-            
+            var rssXmlurl = "http://vestnik-lesnoy.ru/feed/";            
 
             var binPath = Environment.CurrentDirectory;
             string xmlPageFilePath =
@@ -50,7 +50,7 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
                 }
             }
 
-            var massMedia = new MassMedia("https://andrey.moveax.ru");
+            var massMedia = new MassMedia("http://vestnik-lesnoy.ru");
             var rssPageFinder = new RssPageFinder(massMedia);
             var rssPageReader = new RssReader(massMedia);
             var rssPageXml = rssPageFinder.GetPageHtml(rssXmlurl).Result;
@@ -62,7 +62,7 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
 
             var rssPage = new RssPage() { XmlContent = rssPageXml };
             var i = 1;
-            var links = rssPageReader.GetArticlesBasicDataFromRssPage(rssPage).ToList();
+            var links = rssPageReader.GetArticlesBasicDataFromRssPage(rssPage).Take(20).ToList();
             links.ForEach(a =>
                 {
                     var articleFilePath = Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName,
@@ -84,7 +84,7 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
 
         [Theory]
         [InlineData("rssPage.xml")]
-        [Trait("Category", "Unit")]
+        [Trait("Category", "WebData")]
         public void GetMostProbableParsingRuleSuccess_UsingRssWithArticlesDescriptionsTags(string rssPageXmlPath)
         {
             var massMedia = new MassMedia("http://aa.ru")
@@ -101,11 +101,13 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
             var rssPageXml = File.ReadAllText(xmlPageFilePath);
             var articlesHtmlFiles = Directory.EnumerateFiles(Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName,
                 "TestsData", "ArticlesHtmlAndRssPages", "RssPageHasDescriptionTags"));
+
+            var pathSeparator = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? '\\' : '/'; 
             IEnumerable<MayBeArticlePage> mayBeArticles = articlesHtmlFiles
                 .Where(a => !a.EndsWith("rssPage.xml"))
                 .Select(a =>
             {
-                var articleTestId = int.Parse(a.Split('\\').Last().Replace(".html", ""));
+                var articleTestId = int.Parse(a.Split(pathSeparator).Last().Replace(".html", ""));
                 return new MayBeArticlePage(articlesIdsAndUrls[articleTestId])
                 {
                     BodyHtml = File.ReadAllText(a)
@@ -127,19 +129,23 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
         }
 
         [Theory]
-        [InlineData("RssPage_v2.0_2.xml", "", "", "")] // TODO Change to real data
-        [Trait("Category", "Unit")]
-        public void GetMostProbableParsingRuleSuccess_UsingRssWithoutArticlesDescriptionsTags(string rssPageXml, string articleHtml1, string articleHtml2, string articleHtml3)
+        [InlineData("https://aif.ru/rss/politics.php")]
+        [Trait("Category", "WebData")]
+        public void GetMostProbableParsingRuleSuccess_UsingRssWithoutArticlesDescriptionsTags(string rssPageXml)
         {
 
+
+            //TODO descriptions should be removed - they can exist in rss xml file.
         }
 
         [Theory]
         [InlineData("RssPage_v2.0_2.xml", "", "")] // TODO Change to real data
-        [Trait("Category", "Unit")]
+        [Trait("Category", "WebData")]
         public void GetMostProbableParsingRuleSuccess_NotUsingRss(string articleHtml1, string articleHtml2, string articleHtml3)
         {
-
+            
+            
+            //TODO descriptions should be removed - they can exist in rss xml file.
         }
     }
 }
