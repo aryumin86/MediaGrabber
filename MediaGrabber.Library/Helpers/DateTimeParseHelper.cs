@@ -28,6 +28,7 @@ namespace MediaGrabber.Library.Helpers
                 "ddd, d MMM yyyy H:mm:ss",                
                 "ddd, d MMM yyyy HH:mm:ss K",
                 "d MMM yyyy HH:mm:ss K",
+                "ddd, d MMM yyyy HH:mm:ss K",
 
             };
 
@@ -64,10 +65,16 @@ namespace MediaGrabber.Library.Helpers
             if (attempt == false && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 ruRu.DateTimeFormat.MonthNames =
-                    "янв.;февр.;март;апр.;май;июнь;июль;авг.;сент.;окт.;нояб.;дек.;"
+                    "СЏРЅРІ;С„РµРІ;РјР°СЂ;Р°РїСЂ;РјР°Р№;РёСЋРЅ;РёСЋР»;Р°РІРі;СЃРµРЅ;РѕРєС‚;РЅРѕСЏ;РґРµРє;"
                     .Split(";")
                     .ToArray();
 
+                attempt = DateTime.TryParse(dateTimeString, ruRu,
+                    DateTimeStyles.None, out res);
+            }
+
+            if (attempt == false && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
                 attempt = DateTime.TryParseExact(dateTimeString, dateFormats, ruRu,
                     DateTimeStyles.None, out res);
             }
