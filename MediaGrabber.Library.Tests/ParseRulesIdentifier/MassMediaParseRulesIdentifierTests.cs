@@ -123,7 +123,9 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
                 XmlContent = rssPageXml
             };
             
-            var rule = rulesIdentifier.ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles);
+            var rule = 
+                rulesIdentifier.ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles)
+                .FirstOrDefault();
 
             Assert.NotNull(rule);
         }

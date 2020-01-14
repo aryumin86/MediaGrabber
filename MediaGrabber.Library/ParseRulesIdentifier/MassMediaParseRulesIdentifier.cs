@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MediaGrabber.Library.Entities;
+using MediaGrabber.Library.Enums;
 using MediaGrabber.Library.Helpers;
 using System;
 using System.Collections.Generic;
@@ -53,32 +54,41 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         public override ParsingRule GetMostProbableParsingRule(IEnumerable<RssPage> rssPages)
         {
-            //ParsingRule result = null;
+            ParsingRule result = null;
             IEnumerable<MayBeArticlePage> mayBeArticles = null;
             IEnumerable<ParsingRule> rules = null;
             if(rssPages != null && rssPages.Any()){
                 
                 foreach(var rssPage in rssPages)
                 {
+                    IEnumerable<ParsingRule> rulesFromRssPageArticles = null;
                     mayBeArticles = GetArticlesFromRssPage(rssPage);
                     if(mayBeArticles.Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart)).Count() < _minimumArticlesNumberWithDescriptionFromRss)
-                        continue;
-                    var rulesFromRssPageArticles = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles);
+                    {
+                        rulesFromRssPageArticles = ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithoutDescriptions(rssPage, mayBeArticles);
+                    }
+                    else
+                    {
+                        rulesFromRssPageArticles = 
+                            ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles);
+                    }
+                    
                     if(rules == null)
                         rules = new List<ParsingRule>();
-                    if(rulesFromRssPageArticles != null)
+                    if(rulesFromRssPageArticles != null && rulesFromRssPageArticles.Any())
                         (rules as List<ParsingRule>).AddRange(rulesFromRssPageArticles);
+                    // may be it is a good idea here to try to 
+                    // identify parsing rule for THIS rss page (it is foreach for all rss pages)
                 }
 
                 //TODO Process rules - find most popular.
                 //
                 //
-                if(rules.Count() >= 3)
-                    return rules.First();
+                return result;
             }
 
             mayBeArticles = GetArticlesFromMainPage();
-            rules = ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(mayBeArticles);
+            rules = ProcessHtmlWithArticlesToIdentifyRulesNotUsingRssPages(mayBeArticles);
             //TODO Process rules - find most popular.
             //
             //
@@ -107,17 +117,48 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         {
             IEnumerable<ParsingRule> result = null;
 
-            // Filtering artucles: getting MayBeArticlePage objects collected 
+            // Filtering articles: getting MayBeArticlePage objects collected 
             // from RSS pages which has a description tag
+            articles = articles.Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart));
 
             // If there are at least 'minArticlesWithDescriptin' such articles we use them for 
             // identifying containers which contain article text on article page
+            if (articles.Count() < _minimumArticlesNumberWithDescriptionFromRss)
+                return result;
+
+
 
             // Articles with containers are opened
 
-            throw new NotImplementedException();
 
             return result;
+        }
+
+        
+
+        /// <summary>
+        /// Process articles to identify parsing rules without using RSS pages data.
+        /// </summary>
+        /// <param name="articlesPages"></param>
+        /// <returns></returns>
+        public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesNotUsingRssPages(IEnumerable<MayBeArticlePage> articles)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Process articles to identify parsing rules using RSS pages without description.
+        /// </summary>
+        /// <param name="articlesPages"></param>
+        /// <returns></returns>
+        public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithoutDescriptions(RssPage rssPage, IEnumerable<MayBeArticlePage> articles)
+        {
+            throw new NotImplementedException();
+        }
+
+        private HtmlNode FindHtmlNodeWithLongestText(MayBeArticlePage articlePage)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -125,22 +166,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private string OpenArticleUrl(string html)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Process articles to identify parsing rules without using RSS pages data.
-        /// </summary>
-        /// <param name="articlesPages"></param>
-        /// <returns></returns>
-        public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesWithoutUsingRssPagesWithDescriptions(IEnumerable<MayBeArticlePage> articles)
-        {
-            throw new NotImplementedException();
-        }
-
-        private HtmlNode FindHtmlNodeWithLongestText(MayBeArticlePage articlePage)
+        private string OpenArticleUrl(string url, WebSiteOpeningType webSiteOpeningType = WebSiteOpeningType.HtmlAgilityPack)
         {
             throw new NotImplementedException();
         }

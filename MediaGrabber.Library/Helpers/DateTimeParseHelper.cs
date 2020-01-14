@@ -1,5 +1,7 @@
 using System;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -55,6 +57,17 @@ namespace MediaGrabber.Library.Helpers
             }
 
             if(attempt == false){
+                attempt = DateTime.TryParseExact(dateTimeString, dateFormats, ruRu,
+                    DateTimeStyles.None, out res);
+            }
+
+            if (attempt == false && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                ruRu.DateTimeFormat.MonthNames =
+                    "€нв.;февр.;март;апр.;май;июнь;июль;авг.;сент.;окт.;но€б.;дек.;"
+                    .Split(";")
+                    .ToArray();
+
                 attempt = DateTime.TryParseExact(dateTimeString, dateFormats, ruRu,
                     DateTimeStyles.None, out res);
             }

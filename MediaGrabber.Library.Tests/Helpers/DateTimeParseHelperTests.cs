@@ -11,7 +11,6 @@ namespace MediaGrabber.Library.Tests.Helpers
         [InlineData("1 дек 2019")]
         [InlineData("Вс, 1 дек 2019")]
         [InlineData("Вс, 1 дек 2019 20:40:00")]
-        [InlineData("Вс, 1 дек 2019 20:40:00")]
         [InlineData("Вс, 1 дек 2019 20:40:00 +0300")]
         [InlineData("Sun, 12 Jan 2020 15:35:00 +0300")]
         [InlineData("1 дек 2019 20:40:00")]
