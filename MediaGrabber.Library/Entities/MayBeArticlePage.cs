@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using HtmlAgilityPack;
 
 namespace MediaGrabber.Library.Entities
 {
@@ -27,13 +28,17 @@ namespace MediaGrabber.Library.Entities
         public string ProbableArticleText { get; set; }
         public string ProbableArticleHtml { get; set; }
         public string ProbableBodyPart {get; set;}
+        public DateTime WhenPublished {get; set;}
+        public string Url {get; set;}
+        public HtmlDocument HtmlDocument {get; private set;}
 
-        /// <summary>
-        /// Looking for most probable article text containers.
-        /// </summary>
-        public void FindProbableArticleContainers(int maxElems)
-        {
-            MayBeArticleContainers = new SortedList<int, MayBeArticleContainer>(maxElems);
+        public void LoadHtml(){
+            if(!string.IsNullOrWhiteSpace(this.BodyHtml)){
+                this.HtmlDocument = new HtmlDocument();
+                this.HtmlDocument.LoadHtml(this.BodyHtml);
+            }
+            else
+                throw new InvalidOperationException("Can't load html since there is empty of null BodyHtml property");
         }
     }
 }

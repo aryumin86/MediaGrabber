@@ -32,6 +32,6 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <param name="mayBeArticlePages"></param>
         /// <param name="maxParsingRulesNumber"></param>
         /// <returns></returns>
-        public abstract IEnumerable<ParsingRule> GetMostProbableParsingRules(int maxParsingRulesNumber);
+        public abstract IEnumerable<ParsingRule> GetMostProbableParsingRules(IEnumerable<RssPage> rssPages, int maxParsingRulesNumber);
     }
 }

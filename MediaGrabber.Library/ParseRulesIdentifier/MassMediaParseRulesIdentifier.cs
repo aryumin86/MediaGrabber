@@ -5,7 +5,11 @@ using MediaGrabber.Library.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MediaGrabber.Library.ParseRulesIdentifier
 {
@@ -30,11 +34,19 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         {
             var rssReader = new RssReader(_massMedia);
             var articlesBasicData = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
-            return articlesBasicData.Select(x => new MayBeArticlePage(x.Url)
+            
+            var res = articlesBasicData.Select(x => new MayBeArticlePage(x.Url)
             {
-                BodyHtml = x.BodyHtml,
-                ProbableBodyPart = x.BodyPart
+                ProbableBodyPart = x.BodyPart,
+                WhenPublished = x.WhenPublished
             });
+            
+            foreach(var r in res){
+                r.BodyHtml = GetPageHtml(r.Url).Result;
+                Thread.Sleep(_massMedia.ParsingPauseInMs);
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -54,7 +66,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         public override ParsingRule GetMostProbableParsingRule(IEnumerable<RssPage> rssPages)
         {
-            ParsingRule result = null;
+            //ParsingRule result = null;
             IEnumerable<MayBeArticlePage> mayBeArticles = null;
             IEnumerable<ParsingRule> rules = null;
             if(rssPages != null && rssPages.Any()){
@@ -84,7 +96,9 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
                 //TODO Process rules - find most popular.
                 //
                 //
-                return result;
+                //return result;
+                if(rules != null && rules.Any())
+                    return rules.First(); // TO here we should identify the most popular rule
             }
 
             mayBeArticles = GetArticlesFromMainPage();
@@ -102,7 +116,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <param name="mayBeArticlePages"></param>
         /// <param name="maxParsingRulesNumber"></param>
         /// <returns></returns>
-        public override IEnumerable<ParsingRule> GetMostProbableParsingRules(int maxParsingRulesNumber)
+        public override IEnumerable<ParsingRule> GetMostProbableParsingRules(IEnumerable<RssPage> rssPages, int maxParsingRulesNumber)
         {
             throw new NotImplementedException();
         }
@@ -115,26 +129,43 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         public IEnumerable<ParsingRule> ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(RssPage rssPage, IEnumerable<MayBeArticlePage> articles)
         {
-            IEnumerable<ParsingRule> result = null;
+            var result = new List<ParsingRule>();
 
             // Filtering articles: getting MayBeArticlePage objects collected 
             // from RSS pages which has a description tag
-            articles = articles.Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart));
+            articles = articles
+                .Where(a => !string.IsNullOrWhiteSpace(a.ProbableBodyPart) &&
+                    !string.IsNullOrWhiteSpace(a.BodyHtml));
 
             // If there are at least 'minArticlesWithDescriptin' such articles we use them for 
             // identifying containers which contain article text on article page
             if (articles.Count() < _minimumArticlesNumberWithDescriptionFromRss)
-                return result;
+                return null;
 
-
-
-            // Articles with containers are opened
-
+            ParsingRule rule = null;
+            foreach(var a in articles){
+                a.LoadHtml();
+                var articleTextNode = FindNodeWithText(a.ProbableBodyPart, a.HtmlDocument);
+                var articleTextOnPageContainerIdXPath =
+                    FindBestIdXPathForHtmlNode(articleTextNode, a.HtmlDocument);
+                var articleTextOnPageContainerClassXPath = 
+                    FindBestClassXPathForHtmlNode(articleTextNode, a.HtmlDocument);
+                if(!string.IsNullOrWhiteSpace(articleTextOnPageContainerIdXPath)){
+                    rule = new ParsingRule(){
+                        XPath = articleTextOnPageContainerIdXPath
+                    };
+                }
+                else if(!string.IsNullOrWhiteSpace(articleTextOnPageContainerClassXPath)){
+                    rule = new ParsingRule(){
+                        XPath = articleTextOnPageContainerClassXPath
+                    };
+                }
+                if(rule != null)
+                    result.Add(rule);
+            }
 
             return result;
         }
-
-        
 
         /// <summary>
         /// Process articles to identify parsing rules without using RSS pages data.
@@ -166,9 +197,40 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private string OpenArticleUrl(string url, WebSiteOpeningType webSiteOpeningType = WebSiteOpeningType.HtmlAgilityPack)
+        public async Task<string> GetPageHtml(string url, 
+            WebSiteOpeningType webSiteOpeningType = WebSiteOpeningType.HtmlAgilityPack)
         {
-            throw new NotImplementedException();
+            string res = string.Empty;
+
+            if(webSiteOpeningType == WebSiteOpeningType.HtmlAgilityPack){
+                using (var client = new HttpClient())
+                {
+                    using(var response = await client.GetAsync(url).ConfigureAwait(false))
+                    {
+                        if(response.StatusCode == HttpStatusCode.Moved)
+                        {
+                            var redirectUri = response.Headers.Location;
+                            if (!redirectUri.IsAbsoluteUri)
+                            {
+                                redirectUri = new Uri(this._massMedia.MainUrl + redirectUri);
+                            }
+                            res = GetPageHtml(redirectUri.AbsoluteUri).Result;
+                        }
+                        else
+                        {
+                            using (var content = response.Content)
+                            {
+                                res = await content.ReadAsStringAsync().ConfigureAwait(false);
+                            }
+                        }                        
+                    }
+                }
+            }
+            else{
+                throw new NotImplementedException();
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -200,7 +262,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <param name="text"></param>
         /// <param name="html"></param>
         /// <returns></returns>
-        private HtmlNode FindNodeWithText(string text, string html)
+        private HtmlNode FindNodeWithText(string text, HtmlDocument htmlDoc)
         {
             throw new NotImplementedException();
         }
