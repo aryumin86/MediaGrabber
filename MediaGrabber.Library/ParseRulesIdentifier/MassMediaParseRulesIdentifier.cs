@@ -20,9 +20,11 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
     {
         private MassMedia _massMedia;
         private readonly int _minimumArticlesNumberWithDescriptionFromRss = 3;
+        private HtmlHelper _htmlHelper;
         public MassMediaParseRulesIdentifier(MassMedia massMedia)
         {
             _massMedia = massMedia;
+            _htmlHelper = new HtmlHelper();
         }
 
         /// <summary>
@@ -262,9 +264,10 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <param name="text"></param>
         /// <param name="html"></param>
         /// <returns></returns>
-        private HtmlNode FindNodeWithText(string text, HtmlDocument htmlDoc)
+        private HtmlNode FindNodeWithText(string htmlWithTextToFind, HtmlDocument doc)
         {
-            throw new NotImplementedException();
+            var longestPureText = _htmlHelper.FindLongestPureTextInHtml(htmlWithTextToFind);
+            return _htmlHelper.LookForUniqueHtmlNodeWithText(longestPureText, doc);
         }
     }
 }
