@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using HtmlAgilityPack;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -176,8 +177,41 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="text"></param>
         /// <param name="doc"></param>
         /// <returns></returns>
-        public HtmlNode LookForUniqueHtmlNodeWithText(string text, HtmlDocument doc){
-            throw new NotImplementedException();
+        public HtmlNode LookForUniqueHtmlNodeWithText(string textToFind, HtmlDocument doc){
+            HtmlNode result = null;
+            if (doc == null)
+                throw new ArgumentException("doc argument can't be null");
+            if (textToFind == null)
+                throw new ArgumentException("textToFind argument can't be null");
+            
+            var allNodesWithOnlyTextData = new List<HtmlNode>();
+            FindAllNodesThatContainOnlyTextData(doc.DocumentNode, allNodesWithOnlyTextData);
+            var nodesWithThisText = allNodesWithOnlyTextData
+                .Where(n => n.InnerHtml.Contains(textToFind));
+            if (nodesWithThisText.Count() > 1)
+                return null;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Recursively looks for all nodes that contains only text data.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        private void FindAllNodesThatContainOnlyTextData(HtmlNode node, ICollection<HtmlNode> nodes)
+        {
+            foreach (var child in node.Descendants())
+            {
+                if (string.IsNullOrWhiteSpace(child.InnerHtml) || (string.IsNullOrWhiteSpace(child.InnerText)))
+                    continue;
+
+                if (NodeContainsOnlyTextAndAllowedTags(child))
+                    nodes.Add(child);
+                else
+                    FindAllNodesThatContainOnlyTextData(child, nodes);
+            }
         }
 
         /// <summary>
@@ -201,11 +235,14 @@ namespace MediaGrabber.Library.Helpers
         }
 
         /// <summary>
-        /// 
+        /// Identify if a node contains only text data (text and some allowed html tags)
         /// </summary>
         /// <returns></returns>
         public bool NodeContainsOnlyTextAndAllowedTags(HtmlNode node){
-            throw new NotImplementedException();
+            if (node.ChildNodes.All(ch => _allowedInTextTags.Contains(ch.Name)))
+                return true;
+            else
+                return false;
         }
     }
 }
