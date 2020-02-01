@@ -266,9 +266,34 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         private HtmlNode FindNodeWithText(string htmlWithTextToFind, HtmlDocument doc)
         {
+            HtmlNode result = null;
             var parsingContext = new ParsingHtmlContext(htmlWithTextToFind);
             _htmlHelper.FindLongestPureTextInHtml(parsingContext);
-            return _htmlHelper.LookForUniqueHtmlNodeWithText(parsingContext.LongestTextInHtml, doc);
+            if (string.IsNullOrWhiteSpace(parsingContext.LongestTextInHtml))
+                return null;
+            result = _htmlHelper.LookForUniqueHtmlNodeWithText(parsingContext.LongestTextInHtml, doc);
+            
+            // trying to take only one longest sentence 
+            if(result == null)
+            {
+                var longestDescriptionSentence =
+                    parsingContext.LongestTextInHtml.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)
+                    .OrderByDescending(x => x.Length)
+                    .First();
+                result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
+            }
+
+            // trying to take only one longest sentence part 
+            if (result == null)
+            {
+                var longestDescriptionSentence =
+                    parsingContext.LongestTextInHtml.Split(new char[] { '.', ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .OrderByDescending(x => x.Length)
+                    .First();
+                result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
+            }
+
+            return result;
         }
     }
 }

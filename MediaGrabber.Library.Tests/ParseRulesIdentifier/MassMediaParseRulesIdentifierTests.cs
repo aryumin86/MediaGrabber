@@ -97,8 +97,14 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
             string xmlPageFilePath =
                 Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName,
                 "TestsData", "ArticlesHtmlAndRssPages", "RssPageHasDescriptionTags", rssPageXmlPath);
-
             var rssPageXml = File.ReadAllText(xmlPageFilePath);
+            var rssReader = new RssReader(massMedia);
+            var rssPage = new RssPage()
+            {
+                XmlContent = rssPageXml
+            };
+            var articlesFromRssPage = rssReader.GetArticlesBasicDataFromRssPage(rssPage);
+
             var articlesHtmlFiles = Directory.EnumerateFiles(Path.Combine(Directory.GetParent(binPath).Parent.Parent.FullName,
                 "TestsData", "ArticlesHtmlAndRssPages", "RssPageHasDescriptionTags"));
 
@@ -110,18 +116,14 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
                 var articleTestId = int.Parse(a.Split(pathSeparator).Last().Replace(".html", ""));
                 return new MayBeArticlePage(articlesIdsAndUrls[articleTestId])
                 {
-                    BodyHtml = File.ReadAllText(a)
+                    BodyHtml = File.ReadAllText(a),
+                    ProbableBodyPart = 
+                        articlesFromRssPage.First(a => a.Url == articlesIdsAndUrls[articleTestId]).BodyPart
                 };
             }).ToList();
 
             var rulesIdentifier = 
-                new MediaGrabber.Library.ParseRulesIdentifier.MassMediaParseRulesIdentifier(massMedia);
-            var rssReader = new RssReader(massMedia);
-
-            var rssPage = new RssPage()
-            {
-                XmlContent = rssPageXml
-            };
+                new MediaGrabber.Library.ParseRulesIdentifier.MassMediaParseRulesIdentifier(massMedia);            
             
             var rule = 
                 rulesIdentifier.ProcessHtmlWithArticlesToIdentifyRulesUsingRssPagesWithDescriptions(rssPage, mayBeArticles)

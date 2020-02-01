@@ -43,13 +43,17 @@ namespace MediaGrabber.Library.Helpers
             '.', ',', ':', ':', '?', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
             '-', '+', '=', '[', ']', '№'
         };
+        private HashSet<char> disAllowedSymbolsInText = new HashSet<char>{
+            '[', ']', '\r', '\n', '\t'
+        };
+
 
         /// <summary>
         /// If there is new longest string discovered -> context should be updated with
         /// new longest string indexes.
         /// </summary>
         /// <value></value>
-        private void UpdateContextLongestStringIfNecessary(ParsingHtmlContext ctx) {
+        private static void UpdateContextLongestStringIfNecessary(ParsingHtmlContext ctx) {
             if(ctx.CurrentIndex - ctx.StartIndex 
                 > ctx.LongestTextEndIndex - ctx.LongestTextStartIndex){
                     ctx.LongestTextEndIndex = ctx.CurrentIndex;
@@ -61,7 +65,7 @@ namespace MediaGrabber.Library.Helpers
         /// Iterate through tag till it ends - till closing sign '>' or end of full html string.
         /// </summary>
         /// <value></value>
-        private void PaceThroughTag(ParsingHtmlContext ctx) {
+        private static void PaceThroughTag(ParsingHtmlContext ctx) {
             var goOn = true;
             while(goOn){
                 ctx.CurrentIndex++;
@@ -78,7 +82,7 @@ namespace MediaGrabber.Library.Helpers
         /// To tell the truth it is not good way... But I don't care.
         /// </summary>
         /// <value></value>
-        private bool IsThereClosingAngleBracketSignAhead(ParsingHtmlContext ctx){
+        private static bool IsThereClosingAngleBracketSignAhead(ParsingHtmlContext ctx){
             for(var i = ctx.CurrentIndex; i < ctx.FullHtml.Length; i++){
                 if(ctx.FullHtml[i] == '>') 
                     return true;
@@ -91,7 +95,7 @@ namespace MediaGrabber.Library.Helpers
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        private bool IsClosingTagStarts (ParsingHtmlContext ctx) {
+        private static bool IsClosingTagStarts (ParsingHtmlContext ctx) {
             if(ctx.CurrentIndex + 2 >= ctx.FullHtml.Length ||
                 ctx.FullHtml[ctx.CurrentIndex] != '/'){
                     return false;
@@ -112,6 +116,8 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="html"></param>
         /// <returns></returns>
         public void FindLongestPureTextInHtml(ParsingHtmlContext ctx){
+            if (ctx == null)
+                throw new ArgumentException("ParsingHtmlContext argument can't be null");
             var goOn = true;
             ctx.StartIndex = ctx.CurrentIndex;
             while(goOn){
@@ -143,13 +149,24 @@ namespace MediaGrabber.Library.Helpers
                     continue;
                 }
 
+                if (disAllowedSymbolsInText.Contains(currentSymbol))
+                {
+                    ctx.CurrentIndex--;
+                    UpdateContextLongestStringIfNecessary(ctx);
+                    ctx.CurrentIndex += 2;
+                    ctx.StartIndex = ctx.CurrentIndex;
+                    continue;
+                }
+
                 // if it is a valid text symbol - go on parsing.
-                if(char.IsLetter(currentSymbol) 
+                if (char.IsLetter(currentSymbol) 
                     || char.IsNumber(currentSymbol)
                     || char.IsWhiteSpace(currentSymbol)
                     || allowedSymbolsInText.Contains(currentSymbol)){
-                    ctx.CurrentIndex++;
+                    
                 }
+
+                ctx.CurrentIndex++;
             }
         }
 

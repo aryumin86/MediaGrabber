@@ -20,6 +20,7 @@ namespace MediaGrabber.Library.Tests.Helpers
         [InlineData("needed text","needed text")] //full string is the longest string
         [InlineData("","")]
         [InlineData("¥","")]
+        [InlineData("<![CDATA[<img width=\"150\" height=\"150\" src=\"http://vestnik-lesnoy.ru/wp-content/uploads/2020/01/Плавание-—-копия-150x150.jpg\" class=\"attachment-thumbnail size-thumbnail wp-post-image\" alt=\"\" style=\"float:left; margin:0 10px 10px 0;\" />22 января в плавательном бассейне СШОР «Факел» прошли соревнования по плаванию в зачёт XXI Спартакиады работающей и студенческой молодёжи. В соревнованиях приняло участие 13 команд. В личном первенстве среди женщин на дистанции 25 м вольным стилем места распределились следующим образом: 1 место – Арина Постовалова («Знамя», 14,05 сек.); 2-е – Мария Лещенко («Темп», 15,36 сек.); [&#8230;]]]>", "22 января в плавательном бассейне СШОР «Факел» прошли соревнования по плаванию в зачёт XXI Спартакиады работающей и студенческой молодёжи. В соревнованиях приняло участие 13 команд. В личном первенстве среди женщин на дистанции 25 м вольным стилем места распределились следующим образом: 1 место – Арина Постовалова («Знамя», 14,05 сек.); 2-е – Мария Лещенко («Темп», 15,36 сек.); ")]
         [Trait("Category", "Unit")]
         public void FindLongestPureTextInHtml_Success(string htmlWithText, string textThatShouldBeInLongestTextFragment){
             var parsingContext = new ParsingHtmlContext(htmlWithText){

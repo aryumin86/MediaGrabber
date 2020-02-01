@@ -13,12 +13,8 @@ namespace MediaGrabber.Library.Entities
     {
         public MayBeArticlePage(string url)
         {
-            _url = url;
+            Url = url;
         }
-        /// <summary>
-        /// Url of this page which probably contains article.
-        /// </summary>
-        private readonly string _url;
         public string BodyHtml { get; set; }
         /// <summary>
         /// One of elements with these XPaths probably contains article text.
