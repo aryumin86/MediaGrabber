@@ -266,8 +266,9 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         private HtmlNode FindNodeWithText(string htmlWithTextToFind, HtmlDocument doc)
         {
-            var longestPureText = _htmlHelper.FindLongestPureTextInHtml(htmlWithTextToFind);
-            return _htmlHelper.LookForUniqueHtmlNodeWithText(longestPureText, doc);
+            var parsingContext = new ParsingHtmlContext(htmlWithTextToFind);
+            _htmlHelper.FindLongestPureTextInHtml(parsingContext);
+            return _htmlHelper.LookForUniqueHtmlNodeWithText(parsingContext.LongestTextInHtml, doc);
         }
     }
 }

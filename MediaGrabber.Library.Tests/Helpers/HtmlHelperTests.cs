@@ -14,15 +14,20 @@ namespace MediaGrabber.Library.Tests.Helpers
 
         [Theory]
         [InlineData("<p>AAaa</p>needed text<p>aa</p> test","needed text")]
+        [InlineData("<p>AAaa</p>text<p>aa</p>needed text","needed text")]
+        [InlineData("<p>AAaa</p>needed text<p> test","needed text")] //error with tags - no closing one
+        [InlineData("<p></p>","")]
+        [InlineData("needed text","needed text")] //full string is the longest string
+        [InlineData("","")]
+        [InlineData("¥","")]
         [Trait("Category", "Unit")]
         public void FindLongestPureTextInHtml_Success(string htmlWithText, string textThatShouldBeInLongestTextFragment){
-            var foundText = _htmlHelper.FindLongestPureTextInHtml(htmlWithText);
-            Assert.True(string.Equals(foundText, 
-                textThatShouldBeInLongestTextFragment, StringComparison.OrdinalIgnoreCase));
-        }
-        
-        public void FindLongestPureTextInHtml_FailsWhenNoValidTextInsideNode(){
-            Assert.True(false);
+            var parsingContext = new ParsingHtmlContext(htmlWithText){
+                FullHtml = htmlWithText
+            };
+            _htmlHelper.FindLongestPureTextInHtml(parsingContext);
+            Assert.Equal(parsingContext.LongestTextInHtml, 
+                textThatShouldBeInLongestTextFragment);
         }
 
         public void LookForUniqueHtmlNodeWithText_Success(){
