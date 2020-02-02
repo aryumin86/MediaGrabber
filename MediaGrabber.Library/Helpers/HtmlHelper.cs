@@ -48,6 +48,10 @@ namespace MediaGrabber.Library.Helpers
             '[', ']', '\r', '\n', '\t'
         };
 
+        private HashSet<string> allowedArticleMainContainerNodeNames = new HashSet<string>(){
+            "span", "div", "article", "section"
+        };
+
 
         /// <summary>
         /// If there is new longest string discovered -> context should be updated with
@@ -184,14 +188,40 @@ namespace MediaGrabber.Library.Helpers
             if (textToFind == null)
                 throw new ArgumentException("textToFind argument can't be null");
             
-            var allNodesWithOnlyTextData = new List<HtmlNode>();
-            FindAllNodesThatContainOnlyTextData(doc.DocumentNode, allNodesWithOnlyTextData);
-            var nodesWithThisText = allNodesWithOnlyTextData
-                .Where(n => n.InnerHtml.Contains(textToFind));
-            if (nodesWithThisText.Count() > 1)
-                return null;
+            var allNodesWithTextData = new List<HtmlNode>();
+            //FindAllNodesThatContainOnlyTextData(doc.DocumentNode, allNodesWithOnlyTextData);
+            FindAllNodesWithInnerText(doc.DocumentNode,allNodesWithTextData);
+            var nodesWithThisText = allNodesWithTextData
+                .Where(n => n.InnerText.Contains(textToFind));
+            // TODO choosing node that is a nearest child to the text
+            // Also may be it will be better to choose the node that 
+            // is ALSO has id or unique for the whole html page class name
+            if (nodesWithThisText.Count() > 1){
+                foreach(var n in nodesWithThisText.Where(no => allowedArticleMainContainerNodeNames.Contains(no.Name))){
+                    if(!n.ChildNodes.Intersect(nodesWithThisText).Any()){
+                        result = n;
+                        break;
+                    }
+                }
+            }
 
             return result;
+        }
+
+        /// <summary>
+        /// Looks for all nodes with text.async Result nodes can contain nodes that contain
+        /// other nodes from that list.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="resultList"></param>
+        private void FindAllNodesWithInnerText(HtmlNode node, ICollection<HtmlNode> resultList){
+            foreach (var child in node.ChildNodes){
+                if(string.IsNullOrWhiteSpace(child.InnerText))
+                    continue;
+                resultList.Add(child);
+                if(child.ChildNodes.Count() > 0)
+                    FindAllNodesWithInnerText(child, resultList);
+            }
         }
 
         /// <summary>
@@ -202,14 +232,15 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         private void FindAllNodesThatContainOnlyTextData(HtmlNode node, ICollection<HtmlNode> nodes)
         {
-            foreach (var child in node.Descendants())
+            foreach (var child in node.ChildNodes)
             {
                 if (string.IsNullOrWhiteSpace(child.InnerHtml) || (string.IsNullOrWhiteSpace(child.InnerText)))
                     continue;
 
-                if (NodeContainsOnlyTextAndAllowedTags(child))
+                if (NodeContainsOnlyTextAndAllowedTags(child) 
+                    && allowedArticleMainContainerNodeNames.Contains(child.Name))
                     nodes.Add(child);
-                else
+                else if (child.ChildNodes.Count() > 0)
                     FindAllNodesThatContainOnlyTextData(child, nodes);
             }
         }
@@ -238,7 +269,7 @@ namespace MediaGrabber.Library.Helpers
         /// Identify if a node contains only text data (text and some allowed html tags)
         /// </summary>
         /// <returns></returns>
-        public bool NodeContainsOnlyTextAndAllowedTags(HtmlNode node){
+        private bool NodeContainsOnlyTextAndAllowedTags(HtmlNode node){
             if (node.ChildNodes.All(ch => _allowedInTextTags.Contains(ch.Name)))
                 return true;
             else

@@ -77,7 +77,7 @@ namespace MediaGrabber.Library.Tests.ParseRulesIdentifier
 
                     articlesIdsAndUrls.Add(i, a.Url);
                     i++;
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 });
             
         }
