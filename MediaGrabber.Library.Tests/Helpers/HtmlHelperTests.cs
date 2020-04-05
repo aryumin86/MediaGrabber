@@ -31,46 +31,57 @@ namespace MediaGrabber.Library.Tests.Helpers
                 textThatShouldBeInLongestTextFragment);
         }
 
+        [Trait("Category", "Unit")]
         public void LookForUniqueHtmlNodeWithText_Success(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void LookForUniqueHtmlNodeWithText_FailWhenThereNoOne(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void LookForUniqueHtmlNodeWithText_FailWhenThereAreMoreThanOneWithThisText(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void FindBestIdXPathForHtmlNode_Success(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void FindBestIdXPathForHtmlNode_FailsWhenNoOneWithIdAndOnlyThisTextInside(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void FindBestClassXPathForHtmlNode_Success(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void FindBestClassXPathForHtmlNode_FailsWhenNoOneWithUniqueClassesAndOnlyThisTextInside(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void NodeContainsOnlyTextAndAllowedTags_TrueIfNoTags(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void NodeContainsOnlyTextAndAllowedTags_TrueIfTextAndAllowedTags(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void NodeContainsOnlyTextAndAllowedTags_FalseIfNoText(){
             Assert.True(false);
         }
 
+        [Trait("Category", "Unit")]
         public void NodeContainsOnlyTextAndAllowedTags_FalseIfContainsOtherTags(){
             Assert.True(false);
         }

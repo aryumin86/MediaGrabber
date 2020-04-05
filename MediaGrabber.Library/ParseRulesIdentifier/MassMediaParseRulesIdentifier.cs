@@ -148,6 +148,9 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
             foreach(var a in articles){
                 a.LoadHtml();
                 var articleTextNode = FindNodeWithText(a.ProbableBodyPart, a.HtmlDocument);
+                if (articleTextNode == null)
+                    continue;
+
                 var articleTextOnPageContainerIdXPath =
                     FindBestIdXPathForHtmlNode(articleTextNode, a.HtmlDocument);
                 var articleTextOnPageContainerClassXPath = 
@@ -243,7 +246,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         private string FindBestClassXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
         {
-            throw new NotImplementedException();
+            return _htmlHelper.FindBestClassXPathForHtmlNode(node, doc);
         }
 
         /// <summary>
@@ -254,7 +257,7 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         /// <returns></returns>
         private string FindBestIdXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
         {
-            throw new NotImplementedException();
+            return _htmlHelper.FindBestIdXPathForHtmlNode(node, doc);
         }
 
         /// <summary>
@@ -274,24 +277,24 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
             result = _htmlHelper.LookForUniqueHtmlNodeWithText(parsingContext.LongestTextInHtml, doc);
             
             // trying to take only one longest sentence 
-            if(result == null)
-            {
-                var longestDescriptionSentence =
-                    parsingContext.LongestTextInHtml.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)
-                    .OrderByDescending(x => x.Length)
-                    .First();
-                result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
-            }
+            //if(result == null)
+            //{
+            //    var longestDescriptionSentence =
+            //        parsingContext.LongestTextInHtml.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)
+            //        .OrderByDescending(x => x.Length)
+            //        .First();
+            //    result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
+            //}
 
-            // trying to take only one longest sentence part 
-            if (result == null)
-            {
-                var longestDescriptionSentence =
-                    parsingContext.LongestTextInHtml.Split(new char[] { '.', ',' }, StringSplitOptions.RemoveEmptyEntries)
-                    .OrderByDescending(x => x.Length)
-                    .First();
-                result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
-            }
+            //// trying to take only one longest sentence part 
+            //if (result == null)
+            //{
+            //    var longestDescriptionSentence =
+            //        parsingContext.LongestTextInHtml.Split(new char[] { '.', ',' }, StringSplitOptions.RemoveEmptyEntries)
+            //        .OrderByDescending(x => x.Length)
+            //        .First();
+            //    result = _htmlHelper.LookForUniqueHtmlNodeWithText(longestDescriptionSentence, doc);
+            //}
 
             return result;
         }

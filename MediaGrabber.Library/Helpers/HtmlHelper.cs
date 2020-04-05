@@ -3,6 +3,7 @@ using System.Collections;
 using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MediaGrabber.Library.Helpers
 {
@@ -48,9 +49,13 @@ namespace MediaGrabber.Library.Helpers
             '[', ']', '\r', '\n', '\t'
         };
 
-        private HashSet<string> allowedArticleMainContainerNodeNames = new HashSet<string>(){
+        private string[] allowedArticleMainContainerNodeNames = new string[]{
             "span", "div", "article", "section"
         };
+
+        private static char[] wordsSplitChars = new char[] { ' ', ',', ';', '.', '!', '?' };
+        private static Regex onlyWordsRegex = new Regex("^[а-яА-Яa-zA-Z0-9]+$", 
+            RegexOptions.Compiled | RegexOptions.Singleline);
 
 
         /// <summary>
@@ -189,23 +194,93 @@ namespace MediaGrabber.Library.Helpers
                 throw new ArgumentException("textToFind argument can't be null");
             
             var allNodesWithTextData = new List<HtmlNode>();
-            //FindAllNodesThatContainOnlyTextData(doc.DocumentNode, allNodesWithOnlyTextData);
             FindAllNodesWithInnerText(doc.DocumentNode,allNodesWithTextData);
+
+            // We will look for same sequence of words in the nodes with text
             var nodesWithThisText = allNodesWithTextData
-                .Where(n => n.InnerText.Contains(textToFind));
-            // TODO choosing node that is a nearest child to the text
-            // Also may be it will be better to choose the node that 
-            // is ALSO has id or unique for the whole html page class name
-            if (nodesWithThisText.Count() > 1){
-                foreach(var n in nodesWithThisText.Where(no => allowedArticleMainContainerNodeNames.Contains(no.Name))){
-                    if(!n.ChildNodes.Intersect(nodesWithThisText).Any()){
-                        result = n;
-                        break;
+                .Where(n => HasSameWordsSequences(n.InnerText, textToFind));
+
+            if (nodesWithThisText.Count() > 1)
+            {
+                result = nodesWithThisText.OrderBy(x => GetNodeChildrenTotalCount(x, 0)).First();
+            }
+            else
+                result = nodesWithThisText.FirstOrDefault();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Defines if two texts has the same words sequences.
+        /// </summary>
+        /// <param name="text1"></param>
+        /// <param name="text2"></param>
+        /// <returns></returns>
+        public static bool HasSameWordsSequences(string text, string sample, double accuracyRatio = 0.5)
+        {
+            if (text == null)
+                throw new ArgumentException("text can't be null");
+            if (sample == null)
+                throw new ArgumentException("sample can't be null");
+
+            int sameWordsCount = 0;
+
+            var textWords =
+                            text.Split(wordsSplitChars, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(w => onlyWordsRegex.Match(w))
+                            .Select(w => w.Value.ToUpperInvariant())
+                            .Where(w => !string.IsNullOrWhiteSpace(w))
+                            .ToArray();
+
+            var sampleWords =
+                            sample.Split(wordsSplitChars, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(w => onlyWordsRegex.Match(w))
+                            .Select(w => w.Value.ToUpperInvariant())
+                            .Where(w => !string.IsNullOrWhiteSpace(w))
+                            .ToArray();
+
+            
+            
+            for (var i = 0; i < textWords.Length; i++)
+            {
+                for(var j = 0; j < sampleWords.Length; j++)
+                {
+                    if(textWords[i] == sampleWords[j])
+                    {
+                        var tempSameWordsCount = 1;
+                        var ii = i + 1;
+                        var jj = j + 1;
+                        while(ii < textWords.Length && jj < sampleWords.Length)
+                        {
+                            if (textWords[ii] == sampleWords[jj])
+                            {
+                                tempSameWordsCount++;
+                                ii++;
+                                jj++;
+                            }
+                            else
+                                break;
+                        }
+
+                        if (tempSameWordsCount > sameWordsCount)
+                            sameWordsCount = tempSameWordsCount;
                     }
                 }
             }
 
-            return result;
+            return sameWordsCount / (double)sampleWords.Length >= accuracyRatio;
+        }
+
+        /// <summary>
+        /// Recursively gets the number of all children/ subchildren of node.
+        /// </summary>
+        /// <returns></returns>
+        private int GetNodeChildrenTotalCount(HtmlNode node, int count)
+        {
+            if (node.ChildNodes == null || node.ChildNodes.Count == 0)
+                return count;
+            return count + node.ChildNodes.Select(n => GetNodeChildrenTotalCount(n, count)).Sum() 
+                + node.ChildNodes.Count;
         }
 
         /// <summary>
@@ -219,7 +294,7 @@ namespace MediaGrabber.Library.Helpers
                 if(string.IsNullOrWhiteSpace(child.InnerText))
                     continue;
                 resultList.Add(child);
-                if(child.ChildNodes.Count() > 0)
+                if(child.ChildNodes.Any())
                     FindAllNodesWithInnerText(child, resultList);
             }
         }
@@ -240,7 +315,7 @@ namespace MediaGrabber.Library.Helpers
                 if (NodeContainsOnlyTextAndAllowedTags(child) 
                     && allowedArticleMainContainerNodeNames.Contains(child.Name))
                     nodes.Add(child);
-                else if (child.ChildNodes.Count() > 0)
+                else if (child.ChildNodes.Any())
                     FindAllNodesThatContainOnlyTextData(child, nodes);
             }
         }
@@ -252,7 +327,26 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="doc"></param>
         /// <returns></returns>
         public string FindBestIdXPathForHtmlNode(HtmlNode node, HtmlDocument doc){
-            throw new NotImplementedException();
+            string result = null;
+
+            if (node == null)
+                throw new ArgumentException("node can't be null");
+
+            if (node.Name == "strong")
+                node = node.ParentNode;
+
+            // TODO May be we should consider current current node as needed text container?????
+            // In this case we should check current node siblings for being or not text containers???
+
+            var firstParentSutableContainer =
+                GetFirstParentNodeWithName(allowedArticleMainContainerNodeNames, node, "id");
+
+            if(firstParentSutableContainer != null)
+            {
+                result = $"//*[@id={firstParentSutableContainer.Id}]";
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -262,7 +356,74 @@ namespace MediaGrabber.Library.Helpers
         /// <param name="doc"></param>
         /// <returns></returns>
         public string FindBestClassXPathForHtmlNode(HtmlNode node, HtmlDocument doc){
-            throw new NotImplementedException();
+            string result = null;
+
+            if (node == null)
+                throw new ArgumentException("node can't be null");
+
+            if (node.Name == "strong")
+                node = node.ParentNode;
+
+            // TODO May be we should consider current current node as needed text container?????
+            // In this case we should check current node siblings for being or not text containers???
+
+            // TODO class should be unique for the whole page!!!!!
+            HtmlNode firstParentSutableContainer = null;
+            while (true) // while not found a unique class for the whole page
+            {
+                firstParentSutableContainer =
+                    GetFirstParentNodeWithName(allowedArticleMainContainerNodeNames, node, "class");
+                if (node.Attributes["class"] == null)
+                    return result;
+                if (ClassIsUniqueForTheWholePage(doc, node.Attributes["class"].Value))
+                    break;
+                if (node.ParentNode != null)
+                {
+                    node = node.ParentNode;
+                }
+                else
+                    return result;
+            }
+
+            if (firstParentSutableContainer != null)
+            {
+                result = $"//*[@id={firstParentSutableContainer.Id}]";
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Looks for first parent with one of names in argument neededNames.
+        /// </summary>
+        /// <param name="neededNames"></param>
+        /// <param name="node"></param>
+        /// <param name="notNullAttribute">This attribute should be not null</param>
+        /// <returns></returns>
+        private static HtmlNode GetFirstParentNodeWithName(IEnumerable<string> neededNames, HtmlNode node, string notNullAttribute = null)
+        {
+            var initNode = node;
+            while (true)
+            {
+                node = node = node.ParentNode;
+                if (node == null)
+                {
+                    node = initNode;
+                    break;
+                }
+
+                if (neededNames.Contains(node.ParentNode.Name))
+                {
+                    if(notNullAttribute == null)
+                        break;
+                    else
+                    {
+                        if (node.Attributes[notNullAttribute] != null)
+                            break;
+                    }
+                } 
+            }
+            return node;
         }
 
         /// <summary>
@@ -274,6 +435,16 @@ namespace MediaGrabber.Library.Helpers
                 return true;
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Is class unique for the whole html page.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        private bool ClassIsUniqueForTheWholePage(HtmlDocument doc, string className)
+        {
+            throw new NotImplementedException();
         }
     }
 }
