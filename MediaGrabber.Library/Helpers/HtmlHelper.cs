@@ -402,7 +402,18 @@ namespace MediaGrabber.Library.Helpers
                 throw new ArgumentException("node can't be null");
 
             node = MoveAPaceToRootIfAnyOfSiblingsIsText(node);
-            throw new NotImplementedException();
+            
+            while(node.ParentNode != null)
+            {
+                if (NodeNameIsUniqueForWholePage(doc, node.Name))
+                {
+                    result = node.Name;
+                }
+                else
+                    node = node.ParentNode;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -475,7 +486,11 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         public bool ClassIsUniqueForTheWholePage(HtmlDocument doc, string className)
         {
-            throw new NotImplementedException();
+            var allNodes = new List<HtmlNode>();
+            var nodes = GetAllChildNodes(doc.DocumentNode, allNodes);
+            nodes = allNodes
+                .Where(n => n.Attributes["class"] != null && n.Attributes["class"].Value == className).ToList();
+            return nodes.Count == 1;
         }
 
         /// <summary>
@@ -486,7 +501,28 @@ namespace MediaGrabber.Library.Helpers
         /// <returns></returns>
         public bool NodeNameIsUniqueForWholePage(HtmlDocument doc, string nodeName)
         {
-            throw new NotImplementedException();
+            var allNodes = new List<HtmlNode>();
+            var nodes = GetAllChildNodes(doc.DocumentNode, allNodes);
+            nodes = allNodes.Where(n => n.Name == nodeName).ToList();
+            return nodes.Count == 1;
+        }
+
+        /// <summary>
+        /// Recursively returms all childs and subchilds and sub/sub/sub/sub childs nodes.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private List<HtmlNode> GetAllChildNodes(HtmlNode node, List<HtmlNode> res)
+        {
+            if (node.ChildNodes != null && node.ChildNodes.Count > 0)
+            {
+                res.AddRange(node.ChildNodes.Select(n => GetAllChildNodes(n, res)).SelectMany(n => n));
+            }
+            else
+            {
+                res.Add(node);
+            }
+            return res;
         }
     }
 }
