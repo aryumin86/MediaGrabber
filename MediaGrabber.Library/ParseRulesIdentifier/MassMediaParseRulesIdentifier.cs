@@ -146,27 +146,101 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
 
             ParsingRule rule = null;
             foreach(var a in articles){
+                var allArticleXPathes = new HashSet<string>();
                 a.LoadHtml();
                 var articleTextNode = FindNodeWithText(a.ProbableBodyPart, a.HtmlDocument);
                 if (articleTextNode == null)
                     continue;
 
+                var tempArticleTextNode = articleTextNode;
+
+                var articleTextOnPageContainerTagNameXPath =
+                    FindBestTagNameXPathForHtmlNode(articleTextNode, a.HtmlDocument);
                 var articleTextOnPageContainerIdXPath =
                     FindBestIdXPathForHtmlNode(articleTextNode, a.HtmlDocument);
-                var articleTextOnPageContainerClassXPath = 
+                var articleTextOnPageContainerClassXPath =
                     FindBestClassXPathForHtmlNode(articleTextNode, a.HtmlDocument);
-                if(!string.IsNullOrWhiteSpace(articleTextOnPageContainerIdXPath)){
-                    rule = new ParsingRule(){
-                        XPath = articleTextOnPageContainerIdXPath
-                    };
+
+                var rudeXPath = tempArticleTextNode.XPath;
+                //rule = new ParsingRule()
+                //{
+                //    XPath = rudeXPath
+                //};
+                allArticleXPathes.Add(rudeXPath);
+
+                string byIdXpath = null;
+                string byTagNameXpath = null;
+                string byClassXpath = null;
+
+                tempArticleTextNode = _htmlHelper.MoveAPaceToRootIfAnyOfSiblingsIsText(tempArticleTextNode);
+
+                // moving to root pace by pace trying to identify best rule
+                while (byIdXpath != null && byTagNameXpath != null && byClassXpath != null)
+                {
+                    if (tempArticleTextNode.ParentNode == null)
+                        break;
+
+                    if (!string.IsNullOrWhiteSpace(tempArticleTextNode.Id))
+                    {
+                        byIdXpath = $"//*[@id={tempArticleTextNode.Id}]";
+                        allArticleXPathes.Add(byIdXpath);
+                    }
+
+                    if(tempArticleTextNode.Attributes["class"] != null)
+                    {
+                        var classes = tempArticleTextNode.Attributes["class"].Value.Split(" ").ToArray();
+                        foreach(var @class in classes)
+                        {
+                            if(_htmlHelper.ClassIsUniqueForTheWholePage(tempArticleTextNode.OwnerDocument, @class))
+                            {
+                                byClassXpath = $"//*[contains(@class={@class})]";
+                                allArticleXPathes.Add(byClassXpath);
+                                break;
+                            }
+                        }
+                    }
+
+                    if(_htmlHelper.NodeNameIsUniqueForWholePage(tempArticleTextNode.OwnerDocument, tempArticleTextNode.Name))
+                    {
+                        byTagNameXpath = $"//{tempArticleTextNode.Name}";
+                        allArticleXPathes.Add(byTagNameXpath);
+                    }                        
+
+                    tempArticleTextNode = tempArticleTextNode.ParentNode;
                 }
-                else if(!string.IsNullOrWhiteSpace(articleTextOnPageContainerClassXPath)){
-                    rule = new ParsingRule(){
-                        XPath = articleTextOnPageContainerClassXPath
-                    };
-                }
-                if(rule != null)
-                    result.Add(rule);
+
+                if (byIdXpath != null)
+                    allArticleXPathes.Add(byIdXpath);
+                if(byClassXpath != null)
+                    allArticleXPathes.Add(byClassXpath);
+                if (byTagNameXpath != null)
+                    allArticleXPathes.Add(byTagNameXpath);
+
+                if (byIdXpath == null && articleTextOnPageContainerIdXPath != null)
+                    allArticleXPathes.Add(articleTextOnPageContainerIdXPath);
+                if(byClassXpath == null && articleTextOnPageContainerClassXPath != null)
+                    allArticleXPathes.Add(articleTextOnPageContainerIdXPath);
+                if (byTagNameXpath == null && articleTextOnPageContainerTagNameXPath != null)
+                    allArticleXPathes.Add(articleTextOnPageContainerTagNameXPath);
+
+
+                //if (!string.IsNullOrWhiteSpace(articleTextOnPageContainerIdXPath)){
+                //    rule = new ParsingRule(){
+                //        XPath = articleTextOnPageContainerIdXPath
+                //    };
+                //}
+                //if(!string.IsNullOrWhiteSpace(articleTextOnPageContainerClassXPath)){
+                //    rule = new ParsingRule(){
+                //        XPath = articleTextOnPageContainerClassXPath
+                //    };
+                //}
+                //if(rule != null)
+                //    result.Add(rule);
+
+                result.AddRange(allArticleXPathes.Select(r => new ParsingRule()
+                {
+                    XPath = r
+                }));
             }
 
             return result;
@@ -258,6 +332,17 @@ namespace MediaGrabber.Library.ParseRulesIdentifier
         private string FindBestIdXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
         {
             return _htmlHelper.FindBestIdXPathForHtmlNode(node, doc);
+        }
+
+        /// <summary>
+        /// Looks for best suited xpath for node with article text using html element tag name.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        private string FindBestTagNameXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
+        {
+            return _htmlHelper.FindBestTagNameXPathForHtmlNode(node, doc);
         }
 
         /// <summary>

@@ -332,11 +332,7 @@ namespace MediaGrabber.Library.Helpers
             if (node == null)
                 throw new ArgumentException("node can't be null");
 
-            if (node.Name == "strong")
-                node = node.ParentNode;
-
-            // TODO May be we should consider current current node as needed text container?????
-            // In this case we should check current node siblings for being or not text containers???
+            node = MoveAPaceToRootIfAnyOfSiblingsIsText(node);
 
             var firstParentSutableContainer =
                 GetFirstParentNodeWithName(allowedArticleMainContainerNodeNames, node, "id");
@@ -361,8 +357,7 @@ namespace MediaGrabber.Library.Helpers
             if (node == null)
                 throw new ArgumentException("node can't be null");
 
-            if (node.Name == "strong")
-                node = node.ParentNode;
+            node = MoveAPaceToRootIfAnyOfSiblingsIsText(node);
 
             // TODO May be we should consider current current node as needed text container?????
             // In this case we should check current node siblings for being or not text containers???
@@ -394,6 +389,42 @@ namespace MediaGrabber.Library.Helpers
         }
 
         /// <summary>
+        /// Looks for best suited xpath for node with article text using html element tag name.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        public string FindBestTagNameXPathForHtmlNode(HtmlNode node, HtmlDocument doc)
+        {
+            string result = null;
+
+            if (node == null)
+                throw new ArgumentException("node can't be null");
+
+            node = MoveAPaceToRootIfAnyOfSiblingsIsText(node);
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// if node has siblings that are texts we can move one pace to root,
+        /// trying to find full article text container.
+        /// </summary>
+        public HtmlNode MoveAPaceToRootIfAnyOfSiblingsIsText(HtmlNode node)
+        {
+            while (node.ParentNode != null)
+            {
+                var nodeSiblings = node.ParentNode.ChildNodes.Where(n => n != node);
+                if (_allowedInTextTags.Contains(node.Name))
+                {
+                    node = node.ParentNode;
+                }
+                else
+                    break;
+            }
+            return node;
+        }
+
+        /// <summary>
         /// Looks for first parent with one of names in argument neededNames.
         /// </summary>
         /// <param name="neededNames"></param>
@@ -405,7 +436,7 @@ namespace MediaGrabber.Library.Helpers
             var initNode = node;
             while (true)
             {
-                node = node = node.ParentNode;
+                node = node.ParentNode;
                 if (node == null)
                 {
                     node = initNode;
@@ -442,7 +473,18 @@ namespace MediaGrabber.Library.Helpers
         /// </summary>
         /// <param name="doc"></param>
         /// <returns></returns>
-        private bool ClassIsUniqueForTheWholePage(HtmlDocument doc, string className)
+        public bool ClassIsUniqueForTheWholePage(HtmlDocument doc, string className)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Is node name unique for the whole page.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="nodeName"></param>
+        /// <returns></returns>
+        public bool NodeNameIsUniqueForWholePage(HtmlDocument doc, string nodeName)
         {
             throw new NotImplementedException();
         }
